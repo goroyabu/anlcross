@@ -24,7 +24,7 @@ Then, `cd work/`
 Finally, 
 
 ```
-. run.sh example.root
+$ . run.sh example.root
 ```
 
 --
@@ -33,7 +33,7 @@ For the beginning of your analysis, copy `run.sh` in `example/dsdana` and modify
 Now, you can run the analysis with typing,
 
 ```
-. run.sh my_exp_data.root
+$ . run.sh my_exp_data.root
 ``` 
 
 in your working directory.
@@ -82,17 +82,33 @@ All of them can be installed through homebrew.
 
 ## Installation
 
-First, `git clone https://github.com/goroyabu/anlcross`
+First, 
 
-Then, `cd com_cli/`
+```
+$ git clone https://github.com/goroyabu/anlcross
+```
 
-Then, `make`
+Then, 
 
-Then, `make install`
+```
+$ cd anlcross/
+$ make 
+$ make install
+```
 
-Now, write `source /path/to/com_cli/this.sh` on ~/.bash_profile
+Now, write 
 
-If you want to uninstall, `make uninstall`
+```bash
+source /path/to/anlcross/this.sh
+``` 
+on `~/.bash_profile`.
+
+If you want to uninstall, 
+
+```
+$ make uninstall
+```
+
 
 ## Documentation
 
