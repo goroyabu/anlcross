@@ -75,6 +75,7 @@ namespace anlcross {
     int anl_ana_menu();
     int anl_exit_proc();
     int anl_flush();
+    int anl_error(int level, std::string place, std::string message);
     /* end ANLCROSS 1 */
 
     /* ANLCROSS 2 */

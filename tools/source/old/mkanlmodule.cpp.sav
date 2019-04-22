@@ -1,0 +1,157 @@
+/**
+   @file main.cpp
+   @author Goro Yabu
+   @date 2018/12/20
+   @version 1.0
+**/
+#include <vector>
+#include <string>
+#include <iostream>
+#include <fstream>
+
+#include <cmdline.hpp>
+
+using namespace std;
+
+int write_def(std::string name, std::string author)
+{
+    using namespace std;
+    string outname = name + ".hpp";
+    ofstream ofs(outname);
+
+    ofs << "/**" << endl;
+    ofs << "   @file " << outname << endl;
+    ofs << "   @author " << author << endl;
+    ofs << "   @date 2019/01/01" << endl;
+    ofs << "   @version 1.0" << endl;
+    ofs << "   @brief Write a brief description of this module here." << endl;
+    ofs << "**/" << endl;
+
+    ofs << "#ifndef " << name << "_hpp" << endl;
+    ofs << "#define " << name << "_hpp" << endl;
+    ofs << endl;
+    ofs << "#include \"ANLModuleBase.hpp\" " << endl;
+    ofs << "#include \"ANLCross.hpp\" " << endl;
+    ofs << endl;
+    ofs << "class " << name << " : public anlcross::ANLModuleBase" << endl;
+    ofs << "{" << endl;
+    ofs << "public:" << endl;
+    ofs << "    " << name << "();" << endl;
+    ofs << "    ~" << name << "();" << endl;
+    ofs << endl;
+    ofs << "    void mod_startup(int& status);" << endl;
+    ofs << "    void mod_init(int& status);" << endl;
+    ofs << "    void mod_his(int& status);" << endl;
+    ofs << "    void mod_com(int& status);" << endl;
+    ofs << "    void mod_bgnrun(int& status);" << endl;
+    //ofs << "    void mod_ana(int& nevent, int& eventid, int& status);" << endl;
+    ofs << "    void mod_ana(int& status);" << endl;
+    ofs << "    void mod_endrun(int& status);" << endl;
+    ofs << "    void mod_exit(int& status);" << endl;
+    ofs << "};" << endl;
+    ofs << "#endif" << endl;
+
+    ofs.close();
+    return 0;
+}
+int write_impl(std::string name, std::string author)
+{
+    using namespace std;
+    string outname = name + ".cpp";
+    ofstream ofs(outname);
+
+    ofs << "/**" << endl;
+    ofs << "   @file " << outname << endl;
+    ofs << "   @author " << author << endl;
+    ofs << "   @date 2019/01/01" << endl;
+    ofs << "   @version 1.0" << endl;
+    ofs << "   @brief Write a brief description of this module here." << endl;
+    ofs << "**/" << endl;
+
+    ofs << "#include \"" << name << ".hpp\" " << endl;
+    ofs << "using namespace std;" << endl;
+    ofs << name << "::" << name << "() : ANLModuleBase(\"" << name << "\", \"1.0\")" << endl;
+    ofs << "{" << endl;
+    ofs << "}" << endl;
+    ofs << name << "::~" << name << "()" << endl;
+    ofs << "{" << endl;
+    ofs << "}" << endl;
+    ofs << "void " << name << "::mod_startup(int& status)" << endl;
+    ofs << "{" << endl;
+    ofs << "    status = anlcross::ANL_OK;" << endl;
+    ofs << "}" << endl;
+    ofs << "void " << name << "::mod_init(int& status)" << endl;
+    ofs << "{" << endl;
+    ofs << "    //e.g. Define Bnk, Branch" << endl;
+    ofs << "    status = anlcross::ANL_OK;" << endl;
+    ofs << "}" << endl;
+    ofs << "void " << name << "::mod_his(int& status)" << endl;
+    ofs << "{" << endl;
+    ofs << "    //e.g. Define Histogram" << endl;
+    ofs << "    status = anlcross::ANL_OK;" << endl;
+    ofs << "}" << endl;
+    ofs << "void " << name << "::mod_com(int& status)" << endl;
+    ofs << "{" << endl;
+    ofs << "    //e.g. Modify Parameters" << endl;
+    ofs << "    status = anlcross::ANL_OK;" << endl;
+    ofs << "}" << endl;
+    ofs << "void " << name << "::mod_bgnrun(int& status)" << endl;
+    ofs << "{" << endl;
+    ofs << "    status = anlcross::ANL_OK;" << endl;
+    ofs << "}" << endl;
+    //ofs << "void " << name << "::mod_ana(int& nevent, int& eventid, int& status)" << endl;
+    //ofs << "{" << endl;
+    //ofs << "}" << endl;
+    ofs << "void " << name << "::mod_ana(int& status)" << endl;
+    ofs << "{" << endl;
+    ofs << "    //Main Analysis" << endl;
+    ofs << "    status = anlcross::ANL_OK;" << endl;
+    ofs << "}" << endl;
+    ofs << "void " << name << "::mod_endrun(int& status)" << endl;
+    ofs << "{" << endl;
+    ofs << "    //e.g. TTree Write" << endl;
+    ofs << "    status = anlcross::ANL_OK;" << endl;
+    ofs << "}" << endl;
+    ofs << "void " << name << "::mod_exit(int& status)" << endl;
+    ofs << "{" << endl;
+    ofs << "    //e.g. TFile Close" << endl;
+    ofs << "    status = anlcross::ANL_OK;" << endl;
+    ofs << "}" << endl;
+
+    ofs.close();
+    return 0;
+}
+
+cmdline::parser get_parser()
+{
+    cmdline::parser p;
+    //p.add<string>("modulename", 'n', "name of module", true, "USER");
+    p.add<string>("author", 'a', "name of author", false, "USER");
+    p.add("help", 'h', "print help");
+    return p;
+}
+int print_error(std::string program, std::string message)
+{
+    cerr << program << ":Error: " << message << endl;
+    return -1;
+}
+int main(int argc, char* argv[])
+{
+    cmdline::parser args = get_parser();
+
+    if ( !args.parse(argc, argv) || args.exist("help") || args.rest().size()==0 ){
+	cout << args.error_full() << args.usage();
+	return 0;
+    }
+
+    string author = args.get<string>("author");
+    vector<string> list = args.rest();//args.get<string>("modulename");
+    //string module_name =
+
+    for(auto module_name : list){
+	write_impl(module_name, author);
+	write_def(module_name, author);
+    }
+
+    return 0;
+}

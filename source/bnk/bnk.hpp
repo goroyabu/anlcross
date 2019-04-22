@@ -26,16 +26,14 @@ namespace bnk
 
     template<typename T>
     std::string value_type(){ return "template"; }
-    //template<> std::string value_type<int>(){ return "int"; }
-    //template<> std::string value_type<float>(){ return "float"; }
-    //template<> std::string value_type<double>(){ return "double"; }
     
     class databank_base
     {
     protected:
 	databank_base(const std::string name, const int size = 1)
 	    : m_name(name), m_alloc_size(size), m_used_size(0), m_attribute(0),
-	      m_file_descripter(""), m_num_put(0), m_num_get(0) {}
+	      m_file_descripter(""), m_save_file(false),
+	      m_num_put(0), m_num_get(0) {}
 	std::string m_name;
 	int m_alloc_size;
 	int m_used_size;
@@ -86,13 +84,21 @@ namespace bnk
 	}
 	int Put(const std::vector<T>& vec, int begin, int end)
 	{
-	    if(end<begin || GetAllocSize()<end-begin || vec.size()<end-begin) return BNK_NG;
+	    int size = (int)vec.size();
+	    if( begin<0 || size<=begin ) return BNK_NG;
+	    if( end<0 || size<end ) end = size;
+
+	    if( end<begin ) return BNK_NG;
+	    size = end - begin;
+	    if( m_alloc_size<size ) return BNK_NG;
+	    
 	    m_array.clear();
+
 	    for(int i=begin; i<end; ++i) m_array.push_back(vec[i]);
-	    m_used_size = end-begin; ++m_num_put;
+	    m_used_size = size; ++m_num_put;
+
 	    return BNK_OK;
 	}
-
 	int Get(T* out)
 	{
 	    *out = m_array[0]; ++m_num_get;
@@ -100,19 +106,27 @@ namespace bnk
 	} 
         int Get(std::vector<T>* out, int begin, int end)
 	{
-	    if(end<begin || GetUsedSize()<end-begin) return BNK_NG;
+	    if( !out ) return BNK_NG;
 	    out->clear();
+	    
+	    if( begin<0 || m_used_size<=begin ) return BNK_NG;
+	    if( end<0 || m_used_size<end ) end = m_used_size;
+	    if( end<=begin ) return BNK_NG; 
+
 	    for(int i=begin; i<end; ++i) out->push_back(m_array[i]);
 	    ++m_num_get;
+	    
 	    return BNK_OK;
 	}
 	
 	virtual void List()
 	{
 	    using namespace std;
-	    cout << setw(32) << m_name << setw(8) << m_alloc_size;
-	    cout << setw(8) << m_used_size;
-	    cout << setw(10) << m_num_put << setw(10) << m_num_get;
+	    cout << left << setw(31) << m_name;
+	    cout << right << setw(10) << m_alloc_size;
+	    cout << right << setw(9) << m_used_size;
+	    cout << right << setw(10) << m_num_put;
+	    cout << right << setw(10) << m_num_get;
 	    cout << endl;
 	}
 	virtual void Export()
@@ -169,9 +183,6 @@ namespace bnk
     template<typename T> int bnk_put(const std::string key, const std::vector<T>& in, int begin, int end)
     {
 	int index; if( bnk_key(key, &index) == BNK_NG ) return BNK_NG;
-	int size = end-begin;
-	if( get_bank(index)->GetAllocSize() < size )
-	    size = get_bank(index)->GetAllocSize();
 	((databank<T>*)get_bank(index))->Put(in, begin, end);
 	return BNK_OK;
     }
@@ -179,17 +190,14 @@ namespace bnk
     //modify on 2019/03/19
     template<typename T> T bnk_get(const std::string key)
     {
-	int index;
-        if( bnk_key(key, &index) == BNK_NG ) return 0;
+	int index; if( bnk_key(key, &index) == BNK_NG ) return 0;
 	if( get_bank(index)->GetAllocSize()!=1 ) return 0;
 	T out; if( ((databank<T>*)get_bank(index))->Get(&out) == BNK_NG ) return 0;
 	return out;
     }
-    template<typename T> int bnk_get(const std::string key, std::vector<T>* out, int begin, int end)
+    template<typename T> int bnk_get(const std::string key, std::vector<T>* out, int begin=0, int end=-1)
     {
-	int index;
-	if( bnk_key(key, &index) == BNK_NG ) return BNK_NG;
-	if( end<begin || get_bank(index)->GetUsedSize()<end-begin ) end = begin;
+	int index; if( bnk_key(key, &index) == BNK_NG ) return BNK_NG;
 	return ((databank<T>*)get_bank(index))->Get(out, begin, end);
     }    
     

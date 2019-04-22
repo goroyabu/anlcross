@@ -318,3 +318,15 @@ int anlcross::anl_flush()
     std::cerr.flush();
     return ANL_OK;
 }
+int anlcross::anl_error(int level, std::string place, std::string message)
+{
+    if(level==0){
+        std::cout << "ANL-Information in ";
+    }else if(level==1){
+        std::cout << "ANL-WARNING in ";
+    }else if(level==2){
+        std::cout << "ANL-ERROR in ";
+    }
+    std::cout << place << " : " << message << std::endl;
+    return ANL_NG;
+}
