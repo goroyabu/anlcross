@@ -1,9 +1,26 @@
 eventtree
-G.Yabu
 livetime
-i#unsigned int
+i
 1
 unixtime
+i
+1
+ti_upper
+i
+1
+ti_lower
+i
+1
+ext1ti_upper
+i
+1
+ext1ti_lower
+i
+1
+ext2ti_upper
+i
+1
+ext2ti_lower
 i
 1
 hitnum0
@@ -17,7 +34,7 @@ s
 -64
 hitnum0
 adc0
-s#unsigned short
+s
 -64
 hitnum0
 hitnum1
@@ -118,4 +135,4 @@ adc7
 s
 -64
 hitnum7
--1#exit from define branch
+-1#exit

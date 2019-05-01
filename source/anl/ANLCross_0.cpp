@@ -31,12 +31,12 @@ int anlcross::is_module_on(std::string key)
 }
 int anlcross::is_module_on(int index)
 {
-    if( index<=get_nmodules() ) return ANL_NG;
+    if( index>get_nmodules() ) return ANL_NG;
     return gModuleSwitch[index];
 }
 int anlcross::enable_module(int index, bool on)
 {
-    if( index<=get_nmodules() ) return ANL_NG;
+    if( index>get_nmodules() ) return ANL_NG;
     gModuleSwitch[index] = on;
     return ANL_OK;
 }

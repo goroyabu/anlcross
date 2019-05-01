@@ -295,7 +295,7 @@ std::string read_tree(bool force)
     string tree= "MyTree";
     string author= "USER";
     read_value<string>("Tree Name ?", &tree);
-    read_value<string>("Author Name ?", &author);
+    //read_value<string>("Author Name ?", &author);
     
     vector<branch_info> vbranch;
     set_branch(&vbranch);
@@ -313,7 +313,7 @@ std::string read_tree(bool force)
 	else break;
     }
     
-    if(choise==2) return print_read_tree(tree, author, vbranch, force);
+    if(choise==2) return print_read_tree(tree, "", vbranch, force);
     return "";
 }
 std::string header_write_tree(std::string tree, std::vector<branch_info>& vbranch)
@@ -397,8 +397,8 @@ std::string implement_write_tree(std::string tree, std::vector<branch_info>& vbr
 	if(branch.isarray){
 	    ss << "    define_branch(" << right << setw(23) << "\""+branch.name+"\",";
 	    ss << right << setw(24) << "&m_"+branch.name+"," << endl;
-	    ss << "                  " << right << setw(22) << "\""+make_leaflist(branch)+"\"";
-	    ss << right << setw(5) << branch.size << endl;
+	    ss << "                  " << right << setw(22) << "\""+make_leaflist(branch)+"\",";
+	    ss << right << setw(5) << branch.size << ");" << endl;
 	}else{
 	    ss << "    define_branch(" << right << setw(23) << "\""+branch.name+"\",";
 	    ss << right << setw(24) << "&m_"+branch.name+"," << endl;

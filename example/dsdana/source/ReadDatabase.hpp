@@ -47,6 +47,7 @@ private:
     pairmap mStripMap;
     entrymap mEntryIndex;
     std::vector<stripinfo*> mDatabaseList;
+    std::vector<int> mDetIDList;
     
     int m_asicid, m_asicch;
     int m_detid, m_stripid;
@@ -83,8 +84,10 @@ public:
     TTree * GetTree(){ return mDatabase; }
     int GetX(int detid, int stripid, float* pos){ return get_posx(detid, stripid, pos); }
     int GetY(int detid, int stripid, float* pos){ return get_posy(detid, stripid, pos); }
+    int GetZ(int detid, int stripid, float* pos){ return get_posz(detid, stripid, pos); } 
     int GetWidthX(int detid, int stripid, float* pos){ return get_widthx(detid, stripid, pos); }
     int GetWidthY(int detid, int stripid, float* pos){ return get_widthy(detid, stripid, pos); }
+    int GetWidthZ(int detid, int stripid, float* pos){ return get_widthz(detid, stripid, pos); }
     int GetEthre(int detid, int stripid, float* thre){ return get_ethre(detid, stripid, thre); }
     int GetEPI(int asicid, int asicch, float pha, float* epi){ return get_epi(asicid, asicch, pha, epi); }
     int GetBadch(int asicid, int asicch, int* badch) {return anlcross::ANL_NG;}
@@ -96,6 +99,14 @@ public:
 	GetWidthY(detid, stripid, &width);
 	if( width == -1 ) return true;
 	else return false;
+    }
+    int GetDetIDList(std::vector<int>* detid_list);
+    //int GetNasic() const { return m_asicid_list.size(); }
+    int GetNallch() const { return mDatabaseList.size(); }
+    bool ExistDetID(int detid) const {
+	if( std::find(mDetIDList.begin(), mDetIDList.end(), m_detid) == mDetIDList.end() )
+	    return false;
+	return true;
     }
 };
 #endif

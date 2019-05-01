@@ -43,6 +43,9 @@ void ReadDatabase::mod_init(int &status)
 		cout << "DETID : " << setw(3) << m_detid << " , STRIPID : " << setw(3) << m_stripid << endl;
 		cout << "CALFUNC : " << m_calfunc->GetName() << endl;
 		
+		if( !ExistDetID(m_detid) )
+                    mDetIDList.push_back(m_detid);
+                
 	        stripinfo* temp = new stripinfo();
 		temp->asicid = m_asicid;
 		temp->asicch = m_asicch;
@@ -171,5 +174,11 @@ int ReadDatabase::get_epi(int asicid, int asicch, float pha, float* epi)
     int index;
     if( find_index(detid, stripid, &index) == ANL_NG ) return ANL_NG;
     *epi = mDatabaseList[index]->calfunc->Eval(pha);
+    return ANL_OK;
+}
+int ReadDatabase::GetDetIDList(std::vector<int>* detid_list)
+{
+    std::sort( mDetIDList.begin(), mDetIDList.end() );
+    *detid_list = mDetIDList;
     return ANL_OK;
 }

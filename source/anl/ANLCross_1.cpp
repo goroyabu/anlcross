@@ -227,6 +227,7 @@ int anlcross::anl_show_status()
 
     int nmodules = get_nmodules();
     for(int i=0; i<nmodules; i++){
+	if( !is_module_on(i) ) continue;
 	if( get_count(i)->quit > 0 ) cout << "<--- ";
 	else cout << "     ";
 	

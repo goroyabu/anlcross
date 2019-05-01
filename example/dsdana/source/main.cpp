@@ -6,25 +6,27 @@
 **/
 #include <ANLCross.hpp>
 
+#include "ReadEventtree.hpp"
 #include "ReadDatabase.hpp"
-//#include "ReadROOTTree.hpp"
 #include "ApplyDatabase.hpp"
-//#include "MergeAdjacent.hpp"
-//#include "MakeHit.hpp"
+#include "MergeAdjacent.hpp"
+#include "CoupleHit.hpp"
 //#include "MakePhotonList.hpp"
-//#include "WriteROOTTree.hpp"
+#include "WriteHittree.hpp"
+#include "WriteHittreeAll.hpp"
 
 int main()
 {
     using namespace anlcross;
-    
+
+    add_module(new ReadEventtree());
     add_module(new ReadDatabase());
-    //add_module(new ReadROOTTree());
     add_module(new ApplyDatabase());
-    //add_module(new MergeAdjacent());
-    //add_module(new MakeHit());
+    add_module(new MergeAdjacent());
+    add_module(new CoupleHit());
     //add_module(new MakePhotonList());
-    //add_module(new WriteROOTTree());
+    add_module(new WriteHittree());
+    add_module(new WriteHittreeAll());
     
     anl_init();
     anl_body();

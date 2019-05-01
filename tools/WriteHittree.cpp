@@ -19,6 +19,8 @@ int WriteHittree::set_write_branch()
                             "livetime/i");
     define_branch(            "unixtime",            &m_unixtime,
                             "unixtime/i");
+    define_branch(        "ext2ti_lower",        &m_ext2ti_lower,
+                        "ext2ti_lower/i");
     define_branch(               "detid",               &m_detid,
                                "detid/I");
     define_branch(                 "epi",                 &m_epi,
@@ -41,6 +43,7 @@ int WriteHittree::get_branch_value()
 {
     get_branch("livetime",&m_livetime);
     get_branch("unixtime",&m_unixtime);
+    get_branch("ext2ti_lower",&m_ext2ti_lower);
     get_branch("detid",&m_detid);
     get_branch("epi",&m_epi);
     get_branch("epi_x",&m_epi_x);

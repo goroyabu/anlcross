@@ -10,6 +10,8 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <iterator>
+#include <algorithm>
 #include <memory>
 #include <iostream>
 #include <iomanip>
@@ -73,7 +75,7 @@ namespace bnk
 	databank(const std::string name, int size = 1)
 	    : databank_base(name, size)
 	{
-	    if(size<0) size = 1; m_array.resize(size);
+	    if(size<0) size = 1; m_array.reserve(size);
 	}
 	~databank() {}
 
@@ -94,7 +96,9 @@ namespace bnk
 	    
 	    m_array.clear();
 
-	    for(int i=begin; i<end; ++i) m_array.push_back(vec[i]);
+	    //for(int i=begin; i<end; ++i) m_array.push_back(vec[i]);
+	    for(int i=begin; i<end; ++i) m_array.emplace_back(vec[i]);
+	    
 	    m_used_size = size; ++m_num_put;
 
 	    return BNK_OK;
@@ -112,8 +116,9 @@ namespace bnk
 	    if( begin<0 || m_used_size<=begin ) return BNK_NG;
 	    if( end<0 || m_used_size<end ) end = m_used_size;
 	    if( end<=begin ) return BNK_NG; 
-
-	    for(int i=begin; i<end; ++i) out->push_back(m_array[i]);
+	    
+	    //for(int i=begin; i<end; ++i) out->push_back(m_array[i]);
+	    for(int i=begin; i<end; ++i) out->emplace_back(m_array[i]);
 	    ++m_num_get;
 	    
 	    return BNK_OK;
@@ -190,8 +195,15 @@ namespace bnk
     //modify on 2019/03/19
     template<typename T> T bnk_get(const std::string key)
     {
-	int index; if( bnk_key(key, &index) == BNK_NG ) return 0;
-	if( get_bank(index)->GetAllocSize()!=1 ) return 0;
+	int index;
+	if( bnk_key(key, &index) == BNK_NG ){
+	    std::cout << "Error in bnk::get() " << key << " is not defined" << std::endl; 
+	    return 0;
+	}
+	if( get_bank(index)->GetAllocSize()!=1 ){
+	    std::cout << "Error in bnk::get() " << key << " is array" << std::endl; 
+	    return 0;
+	}
 	T out; if( ((databank<T>*)get_bank(index))->Get(&out) == BNK_NG ) return 0;
 	return out;
     }
