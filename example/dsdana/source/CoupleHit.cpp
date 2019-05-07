@@ -21,14 +21,14 @@ void CoupleHit::mod_init(int &status)
     
     status = this->bnkDefAll();
 
-    evs::EvsDef("1Pt-1Al signal");
-    evs::EvsDef("1Pt-2Al signal");
-    evs::EvsDef("2Pt-1Al signal");
-    evs::EvsDef("2Pt-2Al signal");
-    evs::EvsDef("over 3 signals on 1 side");
-    evs::EvsDef("1hit event");
-    evs::EvsDef("2hit event");
-    evs::EvsDef("over 3hit event");
+    //evs::EvsDef("1Pt-1Al Merged signals");
+    //evs::EvsDef("1Pt-2Al Merged signals");
+    //evs::EvsDef("2Pt-1Al Merged signals");
+    //evs::EvsDef("2Pt-2Al Merged signals");
+    //evs::EvsDef("Over 3  Merged signals");
+    evs::EvsDef("1     Hit Event");
+    evs::EvsDef("2     Hit Event");
+    evs::EvsDef("Over3 Hit Event");
     
     std::cout << std::endl;
 }
@@ -158,9 +158,9 @@ int CoupleHit::bnkPutAll()
     bnk_put<int>  ("lv2signal_id_x_lv3", m_lv2signal_id_x_lv3, 0, m_n_lv2signal_x_lv3);
     bnk_put<int>  ("lv2signal_id_y_lv3", m_lv2signal_id_y_lv3, 0, m_n_lv2signal_y_lv3);
     
-    if(m_nhit_lv3==1) evs::EvsSet("1hit event");
-    else if(m_nhit_lv3==2) evs::EvsSet("2hit event");
-    else if(m_nhit_lv3>=3) evs::EvsSet("over 3hit event");
+    if(m_nhit_lv3==1)      evs::EvsSet("1     Hit Event");
+    else if(m_nhit_lv3==2) evs::EvsSet("2     Hit Event");
+    else if(m_nhit_lv3>=3) evs::EvsSet("Over3 Hit Event");
     
     for(int i=0; i<m_nhit_lv3; i++){
 	m_image->Fill(m_pos_x_lv3[i], m_pos_y_lv3[i]);
@@ -278,19 +278,19 @@ void CoupleHit::case1and1(int detid)
     m_lv2signal_id_x_lv3.emplace_back(m_index_x[0]);
     m_lv2signal_id_y_lv3.emplace_back(m_index_y[0]);
 
-    evs::EvsSet("1Pt-1Al signal");
+    //evs::EvsSet("1Pt-1Al signal");
 }
 void CoupleHit::case1and2(int detid)
 {
-    evs::EvsSet("1Pt-2Al signal");
+    //evs::EvsSet("1Pt-2Al signal");
 }
 void CoupleHit::case2and1(int detid)
 {
-    evs::EvsSet("2Pt-1Al signal");
+    //evs::EvsSet("2Pt-1Al signal");
 }
 void CoupleHit::case2and2(int detid)
 {
-    evs::EvsSet("2Pt-2Al signal");
+    //evs::EvsSet("2Pt-2Al signal");
 }
 void CoupleHit::case3over(int detid)
 {
@@ -323,5 +323,5 @@ void CoupleHit::case3over(int detid)
 	    m_width_z_lv3.emplace_back(width_z);
 	}
     }
-    evs::EvsSet("over 3 signals on 1 side");
+    //evs::EvsSet("over 3 signals on 1 side");
 }

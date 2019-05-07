@@ -90,19 +90,10 @@ public:
 
     int clearVectorAll();
     int extractSignalsOverThreshold();
-    //void extractOneDetector(int detid);
     void extractOneDetector(int detid, std::vector<lv1data>& xdata, std::vector<lv1data>& ydata);
     int convertLv1toLv2(int detid);
-    //int fillHistogram(int detid, int nsignal, std::vector<int> &stripid_list, std::vector<float> &epi_list);
     int fillHistogram(std::vector<lv1data>& data_list);
 
-    /*
-    int fillHistogram(int detid, int nsignal,
-		      const std::vector<int> &stripid_list,
-		      const std::vector<float> &epi_list,
-		      const std::vector<int> &index_list);
-    */
-    //int deleteFilledSignal(int &nsignal_lv1, std::vector<int> &stripid_lv1, std::vector<float> &epi_lv1);
     int getNstrip(TH1D * hist) { return hist->GetEntries(); }
     float getEPI(TH1D * hist) { return hist->Integral(); }
     float getPos(TH1D * hist) { return hist->GetXaxis()->GetBinCenter( hist->GetMaximumBin() ); }

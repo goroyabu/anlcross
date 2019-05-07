@@ -22,6 +22,12 @@ void MergeAdjacent::mod_init(int &status)
     mDatabase->GetDetIDList(&m_detid_list);
     
     status = this->bnkDefAll();
+
+    evs::EvsDef("1Pt-1Al Merged signals");
+    evs::EvsDef("1Pt-2Al Merged signals");
+    evs::EvsDef("2Pt-1Al Merged signals");
+    evs::EvsDef("2Pt-2Al Merged signals");
+    evs::EvsDef("Over 3  Merged signals");
     
     std::cout << std::endl;
 }
@@ -115,6 +121,7 @@ int MergeAdjacent::bnkGetAll()
 int MergeAdjacent::bnkPutAll()
 {
     using namespace bnk;
+    using namespace evs;
     bnk_put<int>  ("nsignal_x_lv2", m_nsignal_x_lv2);
     bnk_put<int>  ("nsignal_y_lv2", m_nsignal_y_lv2);
     bnk_put<int>  ("detid_x_lv2",   m_detid_x_lv2, 0, m_nsignal_x_lv2);
@@ -135,6 +142,17 @@ int MergeAdjacent::bnkPutAll()
     m_multipli_his->Fill(m_nsignal_x_lv2, m_nsignal_y_lv2);
     
     if( m_nsignal_x_lv2 == 0 || m_nsignal_y_lv2 == 0 ) return ANL_SKIP;
+    if( m_nsignal_x_lv2 == 1 && m_nsignal_y_lv1 == 1 )
+	EvsSet("1Pt-1Al Merged signals");
+    else if( m_nsignal_x_lv2 == 1 && m_nsignal_y_lv1 == 2 )
+	EvsSet("1Pt-2Al Merged signals");
+    else if( m_nsignal_x_lv2 == 1 && m_nsignal_y_lv1 == 1 )
+	EvsSet("2Pt-1Al Merged signals");
+    else if( m_nsignal_x_lv2 == 2 && m_nsignal_y_lv1 == 2 )
+	EvsSet("2Pt-2Al Merged signals");
+    else
+	EvsSet("Over 3  Merged signals");
+    
     return ANL_OK;
 }
 int MergeAdjacent::clearVectorAll()
@@ -159,34 +177,6 @@ int MergeAdjacent::clearVectorAll()
     //m_lv1signal_id_y.clear();
     return ANL_OK;
 }
-/*
-void MergeAdjacent::extractOneDetector(int detid)
-{
-    m_nsignal_x = 0;
-    m_stripid_x.clear();
-    m_epi_x.clear();
-    m_index_x.clear();
-    for(int ix=0; ix<m_nsignal_x_lv1; ++ix){
-        if( m_detid_x_lv1[ix] != detid ) continue;
-	++m_nsignal_x;
-	m_stripid_x.emplace_back( m_stripid_x_lv1[ix] );
-	m_epi_x.emplace_back( m_epi_x_lv1[ix] );
-	m_index_x.emplace_back( m_lv1signal_id_x[ix] );
-    }
-
-    m_nsignal_y = 0;
-    m_stripid_y.clear();
-    m_epi_y.clear();
-    m_index_y.clear();
-    for(int ix=0; ix<m_nsignal_y_lv1; ++ix){
-        if( m_detid_y_lv1[ix] != detid ) continue;
-	++m_nsignal_y;
-	m_stripid_y.emplace_back( m_stripid_y_lv1[ix] );
-	m_epi_y.emplace_back( m_epi_y_lv1[ix] );
-	m_index_y.emplace_back( m_lv1signal_id_y[ix] );
-    }
-}
-*/
 void MergeAdjacent::extractOneDetector(int detid, std::vector<lv1data>& xdata, std::vector<lv1data>& ydata)
 {
     using namespace std;
@@ -222,39 +212,6 @@ int MergeAdjacent::extractSignalsOverThreshold()
 	}
     }
     
-    /*
-    int i = m_nsignal_x_lv1 - 1;
-    for(; i>=0; --i){
-	int detid = m_detid_x_lv1[i];
-	int stripid = m_stripid_x_lv1[i];
-	float epi = m_epi_x_lv1[i];
-	float ethre;
-	mDatabase->GetEthre(detid, stripid, &ethre);
-	if( epi < ethre ){
-	    m_stripid_x_lv1.erase( m_stripid_x_lv1.begin() + i );
-	    m_epi_x_lv1.erase( m_epi_x_lv1.begin() + i );
-	    m_detid_x_lv1.erase( m_detid_x_lv1.begin() + i );
-	    m_lv1signal_id_x.erase( m_lv1signal_id_x.begin() + i );
-	    --m_nsignal_x_lv1;
-	}
-    }
-    
-    i = m_nsignal_y_lv1 - 1;
-    for(; i>=0; --i){
-	int detid = m_detid_y_lv1[i];
-	int stripid = m_stripid_y_lv1[i];
-	float epi = m_epi_y_lv1[i];
-	float ethre;
-	mDatabase->GetEthre(detid, stripid, &ethre);
-	if( epi < ethre ){
-	    m_stripid_y_lv1.erase( m_stripid_y_lv1.begin() + i );
-	    m_epi_y_lv1.erase( m_epi_y_lv1.begin() + i );
-	    m_detid_y_lv1.erase( m_detid_y_lv1.begin() + i );
-	    m_lv1signal_id_y.erase( m_lv1signal_id_y.begin() + i );
-	    --m_nsignal_y_lv1;
-	}
-    }
-    */
     if( m_nsignal_x_lv1 == 0 && m_nsignal_y_lv1 == 0 ) return ANL_SKIP;
     return ANL_OK;
 }
@@ -347,8 +304,6 @@ int MergeAdjacent::convertLv1toLv2(int detid)
 int MergeAdjacent::fillHistogram(std::vector<lv1data> &data_list)
 {
     using namespace std;
-    //vector<int> stripid_list;
-    //for(auto data : data_list) stripid_list.emplace_back(data.stripid);
 
     int nsignal = (int)data_list.size();
     int index, detid, stripid;
