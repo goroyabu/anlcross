@@ -12,6 +12,7 @@ CoupleHit::CoupleHit() : ANLModuleBase("CoupleHit", "1.0"), mDatabase(nullptr),
 }
 void CoupleHit::mod_init(int &status)
 {
+    using namespace evs;
     status = ANL_OK;
     std::cout << "CoupleHit::mod_init" << std::endl;
     
@@ -26,9 +27,13 @@ void CoupleHit::mod_init(int &status)
     //evs::EvsDef("2Pt-1Al Merged signals");
     //evs::EvsDef("2Pt-2Al Merged signals");
     //evs::EvsDef("Over 3  Merged signals");
-    evs::EvsDef("1     Hit Event");
-    evs::EvsDef("2     Hit Event");
-    evs::EvsDef("Over3 Hit Event");
+    //evs::EvsDef("1     Hit Event");
+    //evs::EvsDef("2     Hit Event");
+    //evs::EvsDef("Over3 Hit Event");
+    EvsDef("nhit_lv3==1");
+    EvsDef("nhit_lv3==2");
+    EvsDef("nhit_lv3==3");
+    EvsDef("nhit_lv3>=4");
     
     std::cout << std::endl;
 }
@@ -130,10 +135,10 @@ int CoupleHit::bnkGetAll()
     bnk_get<float>("width_y_lv2", &m_width_y_lv2, 0, m_nsignal_y_lv2);
     bnk_get<int>  ("n_merged_strips_x_lv2", &m_n_merged_strips_x_lv2, 0, m_nsignal_x_lv2);
     bnk_get<int>  ("n_merged_strips_y_lv2", &m_n_merged_strips_y_lv2, 0, m_nsignal_x_lv2);
-    m_n_lv1signal_x_lv2 = bnk_get<int>("n_lv1signal_x_lv2");
-    m_n_lv1signal_y_lv2 = bnk_get<int>("n_lv1signal_y_lv2");
-    bnk_get<int>  ("lv1signal_id_x_lv2", &m_lv1signal_id_x_lv2, 0, m_n_lv1signal_x_lv2);
-    bnk_get<int>  ("lv1signal_id_y_lv2", &m_lv1signal_id_y_lv2, 0, m_n_lv1signal_y_lv2);
+    //m_n_lv1signal_x_lv2 = bnk_get<int>("n_lv1signal_x_lv2");
+    //m_n_lv1signal_y_lv2 = bnk_get<int>("n_lv1signal_y_lv2");
+    //bnk_get<int>  ("lv1signal_id_x_lv2", &m_lv1signal_id_x_lv2, 0, m_n_lv1signal_x_lv2);
+    //bnk_get<int>  ("lv1signal_id_y_lv2", &m_lv1signal_id_y_lv2, 0, m_n_lv1signal_y_lv2);
     m_lv2index_x.clear(); m_lv2index_y.clear();
     for(int i=0; i<m_nsignal_x_lv2; ++i) m_lv2index_x.emplace_back(i);
     for(int i=0; i<m_nsignal_y_lv2; ++i) m_lv2index_y.emplace_back(i);
@@ -158,9 +163,10 @@ int CoupleHit::bnkPutAll()
     bnk_put<int>  ("lv2signal_id_x_lv3", m_lv2signal_id_x_lv3, 0, m_n_lv2signal_x_lv3);
     bnk_put<int>  ("lv2signal_id_y_lv3", m_lv2signal_id_y_lv3, 0, m_n_lv2signal_y_lv3);
     
-    if(m_nhit_lv3==1)      evs::EvsSet("1     Hit Event");
-    else if(m_nhit_lv3==2) evs::EvsSet("2     Hit Event");
-    else if(m_nhit_lv3>=3) evs::EvsSet("Over3 Hit Event");
+    if(m_nhit_lv3==1)      evs::EvsSet("nhit_lv3==1");
+    else if(m_nhit_lv3==2) evs::EvsSet("nhit_lv3==2");
+    else if(m_nhit_lv3==3) evs::EvsSet("nhit_lv3==3");
+    else if(m_nhit_lv3>=4) evs::EvsSet("nhit_lv3>=4");
     
     for(int i=0; i<m_nhit_lv3; i++){
 	m_image->Fill(m_pos_x_lv3[i], m_pos_y_lv3[i]);

@@ -25,14 +25,25 @@ void ApplyDatabase::mod_init(int &status)
     
     this->bnkDefAll();
 
-    evs::EvsDef("0 PHA signal");
-    evs::EvsDef("1Pt-0Al PHA signals");
-    evs::EvsDef("0Pt-1Al PHA signals");
-    evs::EvsDef("1Pt-1Al PHA signals");
-    evs::EvsDef("2Pt-1Al PHA signals");
-    evs::EvsDef("1Pt-2Al PHA signals");
-    evs::EvsDef("2Pt-2Al PHA signals");
-    evs::EvsDef("over 3 PHA signals");
+    evs::EvsDef("nsignal_x_lv1==0 && nsignal_y_lv1==0");
+    evs::EvsDef("nsignal_x_lv1==1 && nsignal_y_lv1==0");
+    evs::EvsDef("nsignal_x_lv1==0 && nsignal_y_lv1==1");
+    evs::EvsDef("nsignal_x_lv1==1 && nsignal_y_lv1==1");
+    evs::EvsDef("nsignal_x_lv1==2 && nsignal_y_lv1==0");
+    evs::EvsDef("nsignal_x_lv1==0 && nsignal_y_lv1==2");
+    evs::EvsDef("nsignal_x_lv1==2 && nsignal_y_lv1==1");
+    evs::EvsDef("nsignal_x_lv1==1 && nsignal_y_lv1==2");
+    evs::EvsDef("nsignal_x_lv1==2 && nsignal_y_lv1==2");
+    evs::EvsDef("nsignal_x_lv1>=3 || nsignal_y_lv1>=3");
+    //evs::EvsDef("nsignal_x,y_lv1==0,0");
+    //evs::EvsDef("0 PHA signal");
+    //evs::EvsDef("1Pt-0Al PHA signals");
+    //evs::EvsDef("0Pt-1Al PHA signals");
+    //evs::EvsDef("1Pt-1Al PHA signals");
+    //evs::EvsDef("2Pt-1Al PHA signals");
+    //evs::EvsDef("1Pt-2Al PHA signals");
+    //evs::EvsDef("2Pt-2Al PHA signals");
+    //evs::EvsDef("over 3 PHA signals");
 
     status = ANL_OK;
     
@@ -111,14 +122,18 @@ void ApplyDatabase::mod_ana(int &status)
 	
 	m_multi_hist->Fill(m_nsignal_x_lv1, m_nsignal_y_lv1);
 	//cout << m_nsignal_x_lv1 << endl;
-	if(m_nsignal_x_lv1==0 && m_nsignal_y_lv1==0) evs::EvsSet("0 PHA signals");
-	else if(m_nsignal_x_lv1==1 && m_nsignal_y_lv1==0) evs::EvsSet("1Pt-0Al PHA signals");
-	else if(m_nsignal_x_lv1==0 && m_nsignal_y_lv1==1) evs::EvsSet("0Pt-1Al PHA signals");
-	else if(m_nsignal_x_lv1==1 && m_nsignal_y_lv1==1) evs::EvsSet("1Pt-1Al PHA signals");
-	else if(m_nsignal_x_lv1==2 && m_nsignal_y_lv1==1) evs::EvsSet("2Pt-1Al PHA signals");
-	else if(m_nsignal_x_lv1==1 && m_nsignal_y_lv1==2) evs::EvsSet("1Pt-2Al PHA signals");
-	else if(m_nsignal_x_lv1==2 && m_nsignal_y_lv1==2) evs::EvsSet("2Pt-2Al PHA signals");
-	else evs::EvsSet("over 3 PHA signals");
+	//if(m_nsignal_x_lv1==0 && m_nsignal_y_lv1==0) evs::EvsSet("nsignal_x,y_lv1==0,0");
+	//if(m_nsignal_x_lv1==0 && m_nsignal_y_lv1==0) evs::EvsSet("0 PHA signals");
+	if(m_nsignal_x_lv1==0 && m_nsignal_y_lv1==0) evs::EvsSet("nsignal_x_lv1==0 && nsignal_y_lv1==0");
+	else if(m_nsignal_x_lv1==1 && m_nsignal_y_lv1==0) evs::EvsSet("nsignal_x_lv1==1 && nsignal_y_lv1==0");
+	else if(m_nsignal_x_lv1==0 && m_nsignal_y_lv1==1) evs::EvsSet("nsignal_x_lv1==0 && nsignal_y_lv1==1");
+	else if(m_nsignal_x_lv1==1 && m_nsignal_y_lv1==1) evs::EvsSet("nsignal_x_lv1==1 && nsignal_y_lv1==1");
+	else if(m_nsignal_x_lv1==2 && m_nsignal_y_lv1==0) evs::EvsSet("nsignal_x_lv1==2 && nsignal_y_lv1==0");
+	else if(m_nsignal_x_lv1==0 && m_nsignal_y_lv1==2) evs::EvsSet("nsignal_x_lv1==0 && nsignal_y_lv1==2");
+	else if(m_nsignal_x_lv1==2 && m_nsignal_y_lv1==1) evs::EvsSet("nsignal_x_lv1==2 && nsignal_y_lv1==1");
+	else if(m_nsignal_x_lv1==1 && m_nsignal_y_lv1==2) evs::EvsSet("nsignal_x_lv1==1 && nsignal_y_lv1==2");
+	else if(m_nsignal_x_lv1==2 && m_nsignal_y_lv1==2) evs::EvsSet("nsignal_x_lv1==2 && nsignal_y_lv1==2");
+	else evs::EvsSet("nsignal_x_lv1>=3 || nsignal_y_lv1>=3");
 	
 	//evs::EvsAcm();
 

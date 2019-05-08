@@ -86,6 +86,12 @@ namespace bnk
 	}
 	int Put(const std::vector<T>& vec, int begin, int end)
 	{
+	    if(begin==0 && end==-1){
+		for(auto elem : vec) m_array.emplace_back(elem);
+		m_used_size = (int)vec.size(); ++m_num_put;
+		return BNK_OK;
+	    }
+	    
 	    int size = (int)vec.size();
 	    if( begin<0 || size<=begin ) return BNK_NG;
 	    if( end<0 || size<end ) end = size;

@@ -13,6 +13,7 @@ MergeAdjacent::MergeAdjacent() : ANLModuleBase("MergeAdjacent", "1.0"), mDatabas
 }
 void MergeAdjacent::mod_init(int &status)
 {
+    using namespace evs;
     status = ANL_OK;
     std::cout << "MergeAdjacent::mod_init" << std::endl;
     m_histogram = new TH1D("hist_dist_epi","hist_dist_epi;pos;epi",100,-0.5,99.5);
@@ -23,11 +24,20 @@ void MergeAdjacent::mod_init(int &status)
     
     status = this->bnkDefAll();
 
-    evs::EvsDef("1Pt-1Al Merged signals");
-    evs::EvsDef("1Pt-2Al Merged signals");
-    evs::EvsDef("2Pt-1Al Merged signals");
-    evs::EvsDef("2Pt-2Al Merged signals");
-    evs::EvsDef("Over 3  Merged signals");
+    EvsDef("nsignal_x_lv2==1 && nsignal_y_lv2==1");
+    EvsDef("nsignal_x_lv2==1 && nsignal_y_lv2==2");
+    EvsDef("nsignal_x_lv2==2 && nsignal_y_lv2==1");
+    EvsDef("nsignal_x_lv2==2 && nsignal_y_lv2==2");
+    EvsDef("nsignal_x_lv2>=3 || nsignal_y_lv2>=3");
+    EvsDef("nsignal_x_lv2==1 && n_merged_strips_x_lv2==1");
+    EvsDef("nsignal_x_lv2==1 && n_merged_strips_x_lv2==2");
+    EvsDef("nsignal_y_lv2==1 && n_merged_strips_y_lv2==1");
+    EvsDef("nsignal_y_lv2==1 && n_merged_strips_y_lv2==2");
+    //evs::EvsDef("1Pt-1Al Merged signals");
+    //evs::EvsDef("1Pt-2Al Merged signals");
+    //evs::EvsDef("2Pt-1Al Merged signals");
+    //evs::EvsDef("2Pt-2Al Merged signals");
+    //evs::EvsDef("Over 3  Merged signals");
     
     std::cout << std::endl;
 }
@@ -143,15 +153,25 @@ int MergeAdjacent::bnkPutAll()
     
     if( m_nsignal_x_lv2 == 0 || m_nsignal_y_lv2 == 0 ) return ANL_SKIP;
     if( m_nsignal_x_lv2 == 1 && m_nsignal_y_lv1 == 1 )
-	EvsSet("1Pt-1Al Merged signals");
+	EvsSet("nsignal_x_lv2==1 && nsignal_y_lv2==1");
     else if( m_nsignal_x_lv2 == 1 && m_nsignal_y_lv1 == 2 )
-	EvsSet("1Pt-2Al Merged signals");
+	EvsSet("nsignal_x_lv2==1 && nsignal_y_lv2==2");
     else if( m_nsignal_x_lv2 == 1 && m_nsignal_y_lv1 == 1 )
-	EvsSet("2Pt-1Al Merged signals");
+	EvsSet("nsignal_x_lv2==2 && nsignal_y_lv2==1");
     else if( m_nsignal_x_lv2 == 2 && m_nsignal_y_lv1 == 2 )
-	EvsSet("2Pt-2Al Merged signals");
+	EvsSet("nsignal_x_lv2==2 && nsignal_y_lv2==2");
     else
-	EvsSet("Over 3  Merged signals");
+	EvsSet("nsignal_x_lv2>=3 || nsignal_y_lv2>=3");
+
+    if( m_nsignal_x_lv2 == 1 && m_n_merged_strips_x_lv2[0] == 1 )
+	EvsSet("nsignal_x_lv2==1 && n_merged_strips_x_lv2==1");
+    else if( m_nsignal_x_lv2 == 1 && m_n_merged_strips_x_lv2[0] == 2 )
+	EvsSet("nsignal_x_lv2==1 && n_merged_strips_x_lv2==2");
+
+    if( m_nsignal_y_lv2 == 1 && m_n_merged_strips_y_lv2[0] == 1 )
+	EvsSet("nsignal_y_lv2==1 && n_merged_strips_y_lv2==1");
+    else if( m_nsignal_y_lv2 == 1 && m_n_merged_strips_y_lv2[0] == 2 )
+	EvsSet("nsignal_y_lv2==1 && n_merged_strips_y_lv2==2");    
     
     return ANL_OK;
 }

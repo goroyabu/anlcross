@@ -44,6 +44,7 @@ protected:
 public:
     WriteHittree();
     ~WriteHittree(){}
+    void mod_init(int &status);
     void mod_ana(int &status);
     virtual int set_write_branch();
     virtual int get_branch_value();

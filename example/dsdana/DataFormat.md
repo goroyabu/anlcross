@@ -67,6 +67,7 @@
 #### epi_x_lv1[nsignal_x_lv1] / float
 - A EPI value converted from PHA.
 
+
 -
 ### Lv2 Branch
 
@@ -118,6 +119,7 @@
 #### cmnXX / unsigned short
 - ASICで計算されたCMN(コモンモードノイズ)。
 - adcからcmnを差し引いた値をPHA値とする。
+
 
 -
 #### unixtime / unsigned int

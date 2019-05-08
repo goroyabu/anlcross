@@ -13,9 +13,20 @@ WriteHittree::WriteHittree() :
     WriteTTree("WriteHittree", "1.0")
 {
 }
+void WriteHittree::mod_init(int &status)
+{
+    using namespace evs;
+    WriteTTree::mod_init(status);
+    status = ANL_OK;
+    EvsDef("ES1_1Hit_Pt1-Al1");
+    EvsDef("ES2_1Hit_Pt1-Al2");
+    EvsDef("ES3_1Hit_Pt2-Al1");
+    EvsDef("ES4_1Hit_Pt2-Al2");
+}
 void WriteHittree::mod_ana(int &status)
 {
     using namespace bnk;
+    using namespace evs;
     status = ANL_OK;
 
     m_livetime = bnk_get<unsigned int>("livetime");
@@ -52,6 +63,7 @@ void WriteHittree::mod_ana(int &status)
 	//if( nbytes<0 ) status = ANL_NG;
         ihit++;
     }
+    
 }
 int WriteHittree::set_write_branch()
 {
@@ -128,5 +140,36 @@ int WriteHittree::get_branch_value()
 }
 int WriteHittree::setEventStatus(int *event_status)
 {
+    using namespace evs;
+
+    if(!Evs("nhit_lv3==1")){ *event_status = 0; return ANL_OK; }
+
+    int xstrip = 0; int ystrip = 0;
+    if(Evs("nsignal_x_lv2==1 && n_merged_strips_x_lv2==1")) xstrip = 1;
+    if(Evs("nsignal_y_lv2==1 && n_merged_strips_y_lv2==1")) ystrip = 1;
+
+    if(xstrip==1 && ystrip==1){
+	*event_status = 1;
+	EvsSet("ES1_1Hit_Pt1-Al1");
+	return ANL_OK;
+    }
+    
+    if(Evs("nsignal_x_lv2==1 && n_merged_strips_x_lv2==2")) xstrip = 2;
+    if(Evs("nsignal_y_lv2==1 && n_merged_strips_y_lv2==2")) ystrip = 2;    
+
+    if(xstrip==1 && ystrip==2){
+	*event_status = 2;
+	EvsSet("ES2_1Hit_Pt1-Al2");
+	return ANL_OK;
+    }else if(xstrip==2 && ystrip==1){
+	*event_status = 3;
+	EvsSet("ES3_1Hit_Pt2-Al1");
+	return ANL_OK;
+    }else if(xstrip==2 && ystrip==2){
+	*event_status = 4;
+	EvsSet("ES4_1Hit_Pt2-Al2");
+	return ANL_OK;
+    }
+    
     return 0;
 }
