@@ -129,6 +129,10 @@ namespace bnk
 	    
 	    return BNK_OK;
 	}
+	T* GetPtr()
+	{
+	    return m_array.data();
+	}
 	
 	virtual void List()
 	{
@@ -217,7 +221,13 @@ namespace bnk
     {
 	int index; if( bnk_key(key, &index) == BNK_NG ) return BNK_NG;
 	return ((databank<T>*)get_bank(index))->Get(out, begin, end);
-    }    
+    }
+
+    template<typename T> T* bnk_ptr(const std::string key)
+    {
+	int index; if( bnk_key(key, &index) == BNK_NG ) return nullptr;
+	return ((databank<T>*)get_bank(index))->GetPtr();
+    }
     
     /** **/
     int bnk_net_update(const int index);

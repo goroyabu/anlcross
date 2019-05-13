@@ -48,7 +48,7 @@ void WriteTTree::mod_com(int &status)
 void WriteTTree::mod_ana(int &status)
 {
     status = ANL_OK;
-    status = get_branch_value();
+    //status = get_branch_value();
     int nbytes;
     if( status == ANL_OK ) nbytes = m_tree->Fill();
     if( nbytes<0 ) status = ANL_NG;

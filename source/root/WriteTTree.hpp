@@ -63,8 +63,8 @@ template<typename T>
 int WriteTTree::define_branch(std::string key, T* value, std::string leaflist)
 {
     if( bnk::bnk_is_def(key)==bnk::BNK_NG ) return anlcross::ANL_NG;
-    if( !m_tree->Branch(key.c_str(), value, leaflist.c_str()) )
-	return anlcross::ANL_NG;
+    //if( !m_tree->Branch(key.c_str(), value, leaflist.c_str()) ) return anlcross::ANL_NG;
+    if( !m_tree->Branch(key.c_str(), bnk::bnk_ptr<T>(key), leaflist.c_str()) ) return anlcross::ANL_NG;
     return anlcross::ANL_OK;
 }
 template<typename T>
@@ -73,8 +73,8 @@ int WriteTTree::define_branch(std::string key, std::vector<T>* array,
 {
     if( bnk::bnk_is_def(key)==bnk::BNK_NG ) return anlcross::ANL_NG;
     array->resize(maxsize);
-    if( !m_tree->Branch(key.c_str(), array->data(), leaflist.c_str()) )
-	return anlcross::ANL_NG;
+    //if( !m_tree->Branch(key.c_str(), array->data(), leaflist.c_str()) ) return anlcross::ANL_NG;
+    if( !m_tree->Branch(key.c_str(), bnk::bnk_ptr<T>(key), leaflist.c_str()) ) return anlcross::ANL_NG;
     return anlcross::ANL_OK;
 }
 template<typename T>
