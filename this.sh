@@ -1,6 +1,4 @@
 #!/bin/sh
-cd `dirname ${BASH_ARGV[0]}`
-topdir=`pwd | xargs echo -n`
+topdir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
 export CPATH=$topdir/include:$CPATH
 export LIBRARY_PATH=$topdir/lib:$LIBRARY_PATH
-cd `cd -`
