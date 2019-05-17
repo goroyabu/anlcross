@@ -10,15 +10,9 @@ BIN_DIR := bin/
 CXX_DEBUG_FLAGS = -pg -O0
 CXX_RELEASE_FLAGS = -s -O2
 
-FLAGS = -I${INCLUDEPATH}
-
-ROOTCFLAGS = `root-config --cflags`
-ROOTGLIBS  = `root-config --libs`
-LIBS = -lm -lfftw3 -O3 -lCOMCLI
-
 CXX = g++
-CXXFLAGS = -O2 -W -Wall ${ROOTCFLAGS} ${FLAGS}
-CXXLIBS = ${ROOTGLIBS} ${LIBS}
+CXXFLAGS = -std=c++11 -o3 
+CXXLIBS = -lCOMCLI
 
 .PHONY : release
 release : CXXFLAGS += ${CXX_RELEASE_FLAGS}
