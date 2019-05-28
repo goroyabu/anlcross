@@ -88,58 +88,58 @@ int bnk::bnk_export(const std::string key)
     get_bank(index)->Export();
     return BNK_OK;
 }
-template<> std::string bnk::value_type<int>(){ return "int"; }
-template<> std::string bnk::value_type<float>(){ return "float"; }
-template<> std::string bnk::value_type<double>(){ return "double"; }
+//template<> std::string bnk::value_type<int>(){ return "int"; }
+//template<> std::string bnk::value_type<float>(){ return "float"; }
+//template<> std::string bnk::value_type<double>(){ return "double"; }
 
-/*
-int bnk::BnkIni()
+int bnk::BnkIni(int buffer_size)
 {
     return bnk_init();
 }
-int bnk::BnkEnd()
+int bnk::BnkEnd(void)
 {
     return bnk_end();
 }
-void bnk::BnkLst()
+int bnk::BnkKey(char* key, int* index)
+{
+    return bnk_key((std::string)key, index);
+}
+int bnk::BnkIsDef(char* key)
+{
+    return bnk_is_def((std::string)key);
+}
+int bnk::BnkNdf(void)
+{
+    return bnk_ndef();
+}
+int bnk::BnkEqv(char* new_key, int size, char* old_key, int start)
+{
+    return 0;
+}
+void bnk::BnkLst(void)
 {
     bnk_list();
 }
-int bnk::BnkExportAll()
+int bnk::BnkConnect(char* server)
+{
+    return bnk_connect((std::string)server);
+}
+int bnk::BnkExport(char* key)
+{
+    return bnk_export((std::string)key);
+}
+int bnk::BnkExportAll(void)
 {
     return bnk_export_all();
-}
-int bnk::BnkConnect(std::string server)
-{
-    return bnk_connect(server);
 }
 int bnk::BnkServer(int port)
 {
     return port;
 }
-int bnk::BnkNdf()
-{
-    return bnk_ndef();
-}
-int bnk::BnkKey(const std::string key, int* index)
-{
-    return bnk_key(key, index);
-}
-int bnk::BnkIsDef(const std::string key)
-{
-    return bnk_is_def(key);
-}
-int bnk::BnkEqv(const std::string new_key, const std::string old_key)
-{
-    return new_key == old_key;
-}
+/*
 int bnk::BnkNetUpdate(const int index)
 {
     return index;
-}
-int bnk::BnkExport(const std::string key)
-{
-    return bnk_export(key);
 }
 */
 //template int bnk::BnkDef<int>(const std::string key, const int size = 1);

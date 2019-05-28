@@ -157,7 +157,7 @@ void ApplyDatabase::mod_endrun(int &status)
     m_histall->Write();
     m_spectall->Write();
     m_multi_hist->Write();
-    mDatabase->GetTree()->Clone()->Write();
+    //mDatabase->GetTree()->Clone()->Write();
     
     status = ANL_OK;
 }

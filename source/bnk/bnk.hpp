@@ -26,8 +26,8 @@ namespace bnk
     const int BNK_TRUE = 1;
     const int BNK_FALSE = 0;
 
-    template<typename T>
-    std::string value_type(){ return "template"; }
+    //template<typename T>
+    //std::string value_type(){ return "template"; }
     
     class databank_base
     {
@@ -60,7 +60,7 @@ namespace bnk
 	virtual void List() = 0;
 	virtual void Export() = 0;
 	virtual std::string ClassName() { return "databank_base"; }
-	virtual std::string ValueType() const { return "template"; }
+	//virtual std::string ValueType() const { return "template"; }
     };
     
     /**
@@ -156,7 +156,7 @@ namespace bnk
 	    cout << ")" << endl;
 	}
 	virtual std::string ClassName() { return "databank"; }
-	virtual std::string ValueType() const { return value_type<T>(); }
+	//virtual std::string ValueType() const { return value_type<T>(); }
     };
 
     int add_bank(databank_base* bank);
@@ -234,5 +234,52 @@ namespace bnk
 
     /** **/
     int bnk_export(const std::string key);
+
+    /**
+       For Compatibility
+    **/
+    //int BnkShmCreate(int buffer_size, char *shm_file);
+    //int BnkShmOpen(char *shm_file);
+    //int BnkShmClose(void);
+    int BnkIni(int buffer_size);
+    int BnkEnd(void);
+    template<typename T> int BnkDef(char *key, int size)
+    {
+	return bnk_def<T>((std::string)key, size);
+    }
+    
+    int BnkKey(char *key, int *index);
+    int BnkIsDef(char *key);
+    int BnkNdf(void);
+    int BnkEqv(char *new_key, int size, char *old_key, int start);
+    template<typename T> int BnkPut(char *key, int size, T *ptr)
+    {
+	if(size==1) return bnk_put<T>((std::string)key, *ptr);
+	std::vector<T> vec;
+	for(int i=0; i<size; ++i) vec.emplace_back(ptr[i]);
+	return bnk_put<T>((std::string)key, vec, 0, size);
+    }
+    template<typename T> int BnkGet(char *key, int size, int *used, T *ptr)
+    {
+	if(size==1){
+	    *ptr = bnk_get<T>((std::string)key);
+	    *used = 1; return BNK_OK;
+	}
+	std::vector<T> vec;
+	bnk_get<T>((std::string)key, &vec);
+	*used = 0;
+	for( auto elem : vec ){
+	    ptr[*used] = elem; ++(*used);
+	    if(*used>size) break;
+	}
+	return BNK_OK;
+    }
+    //int BnkfPut(char *key, int *index_ptr, int size, void *ptr);
+    //int BnkfGet(char *key, int *index_ptr, int size, int *used, void *ptr);
+    void BnkLst(void);
+    int BnkConnect(char *server);
+    int BnkExport(char *key);
+    int BnkExportAll(void);
+    int BnkServer(int port);
 };
 #endif

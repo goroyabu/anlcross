@@ -1,25 +1,15 @@
 # @file Makefile
 # @date 2019/01/11
 # @brief 1ファイル1app用のMakefile. sample.cpp(main関数含む)を./sampleにする. TARGETに列挙すればいい
-TARGET = mkanlmodule
+TARGET = mkanlmodule mkdatabase
 
 SOURCE_DIR := source/
 BUILD_DIR := build/
 BIN_DIR := bin/
 
-CXX_DEBUG_FLAGS = -pg -O0
-CXX_RELEASE_FLAGS = -s -O2
-
 CXX = g++
-CXXFLAGS = -std=c++11 -o3 
-CXXLIBS = -lCOMCLI
-
-.PHONY : release
-release : CXXFLAGS += ${CXX_RELEASE_FLAGS}
-release : all
-.PHONY : debug
-debug : CXXFLAGS += ${CXX_DEBUG_FLAGS}
-debug : all
+CXXFLAGS = -std=c++11 -o3 `root-config --cflags`
+CXXLIBS = -lCOMCLI `root-config --libs`
 
 all : $(addprefix $(BUILD_DIR),$(TARGET))
 
@@ -31,7 +21,7 @@ $(BUILD_DIR)%: $(SOURCE_DIR)%.cpp
 	${CXX} ${CXXFLAGS} -c $< -I.
 
 .PHONY : install
-install : $(addprefix $(BUILD_DIR),$(TARGET))
+install : $(shell ls $(BUILD_DIR))
 	mkdir -p $(BIN_DIR); install $< $(BIN_DIR)/
 
 .PHONY : clean
