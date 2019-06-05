@@ -34,7 +34,7 @@ namespace anlcross
 	virtual void mod_his(int& status){ status = ANL_OK; }
 	virtual void mod_com(int& status){ status = ANL_OK; }
 	virtual void mod_bgnrun(int& status){ status = ANL_OK; }  
-	virtual void mod_ana(int& nevent, int& eventid, int& status) { if(nevent-eventid==0) return; mod_ana(status); }
+	virtual void mod_ana(int& nevent, int& eventid, int& status) { mod_ana(status); }
 	virtual void mod_ana(int& status){ status = ANL_OK; }
 	virtual void mod_endrun(int& status){ status = ANL_OK; }
 	virtual void mod_exit(int& status){ status = ANL_OK; }

@@ -111,12 +111,14 @@ int anlcross::call_bgnrun()
 	if( status!=ANL_OK ) return ANL_NG;
         anl_flush();
     }
+    if(nmodules>0) std::cout << std::endl;
     return ANL_OK;
 }
 int anlcross::call_endrun()
 {
     int nmodules = get_nmodules();
     int status = ANL_OK;
+    if(nmodules>0) std::cout << std::endl;
     for(int imodule=0; imodule<nmodules; imodule++){
         anl_flush();
 	status = ANL_OK;
@@ -128,6 +130,7 @@ int anlcross::call_endrun()
 	if( status!=ANL_OK ) return ANL_NG;
         anl_flush();
     }
+    if(nmodules>0) std::cout << std::endl;
     return ANL_OK;
 }
 int anlcross::anl_init()

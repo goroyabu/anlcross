@@ -2,7 +2,7 @@
    @file bnk.hpp
    @author Goro Yabu
    @date 2018/11/23
-   @version 1.0
+   @version 1.2
 **/
 #include "bnk.hpp"
 namespace bnk
@@ -37,7 +37,7 @@ int bnk::bnk_end()
 int bnk::bnk_list()
 {
     using namespace std;
-    cout << "BNK: (data storge system) Ver.1.1" << endl;
+    cout << "BNK: (data storge system) Ver.1.2" << endl;
      
     cout << "# of key    : " << bnk_ndef() << endl;
     

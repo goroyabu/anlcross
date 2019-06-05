@@ -50,6 +50,7 @@ int anlcross::anl_routine_bgnrun(int imodule)
 int anlcross::anl_routine_ana(int imodule, int& nevent, int& eventid)
 {
     int status;
+    //std::cout << "routine imodule= " << imodule << std::endl;
     (*(get_module_chain() +imodule))->mod_ana(nevent, eventid, status);
     return status;
 }

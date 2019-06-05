@@ -29,6 +29,9 @@ void ReadTTree::mod_init(int &status)
     if( status == ANL_OK )
 	status = GetTTreeReader(m_tree_name, m_file, &m_tree_reader);
 
+    m_current_entry = -1;
+    m_max_entry = m_tree_reader.GetTree()->GetEntries();
+    
     if( status == ANL_OK )
 	status = set_read_branch();
 }
@@ -41,8 +44,29 @@ void ReadTTree::mod_com(int &status)
 void ReadTTree::mod_ana(int &status)
 {
     status = ANL_OK;
-    if( !m_tree_reader.Next() ) status = ANL_QUIT;
-    else status = put_branch_value();
+    
+    //cout << m_tree_reader.GetTree()->GetName() << endl;
+    //cout << m_tree_reader.GetEntries(true) << endl;
+    /*
+    if( m_tree_reader.Next()==false ){
+	cout << m_tree_reader.GetCurrentEntry() << endl;
+	cout << "last" << endl;
+	status = ANL_QUIT;
+    }
+    */
+
+    //cout << "read modana" << endl;
+    ++m_current_entry;
+    //cout << m_current_entry << "/" << m_max_entry << endl;
+    if(m_current_entry>=m_max_entry){
+	//cout << "last" << endl;
+	status = ANL_QUIT;
+    }else{
+	m_tree_reader.GetTree()->GetEntry(m_current_entry);
+	//cout << "get" << endl;
+	//status = put_branch_value();
+	status = ANL_OK;
+    }
 }
 void ReadTTree::mod_exit(int &status)
 {

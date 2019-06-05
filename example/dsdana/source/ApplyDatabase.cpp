@@ -74,21 +74,29 @@ void ApplyDatabase::mod_ana(int &status)
         if( TTreeNext( m_intree_name ) == GX_NG ) status = ANL_QUIT;
     }
     */
+    //cout << "ana" << endl;
     if( status == ANL_OK ){
 	this->clearVectorAll();
+	//cout << "clr" << endl;
 	this->bnkGetAll();
+	//cout << "get" << endl;
 	
 	for(int iasic = 0; iasic < m_nasic; iasic++){
 	    int hitnum = mvec_hitnum[iasic];
+	    //cout << iasic << " " << hitnum << endl;
 	  
 	    //cout << "#######" << endl;
 	    //cout << mvec_hitnum[iasic] << endl;
 	    //cout << mvec_adc[iasic].size() << endl;
 	    //cout << mvec_index[iasic].size() << endl;
-	    
-	    for(int isignal = 0; isignal < hitnum; isignal++){		
+
+	    for(int isignal = 0; isignal < hitnum; isignal++){
+		//cout << "id" << endl;
 		int asicid = iasic;
+		//cout << "ch" << endl;
+		//cout << mvec_index[iasic].size() << endl;
 		int asicch = mvec_index[iasic][isignal];
+		//cout << "after" << endl;
 		float pha = mvec_adc[iasic][isignal] - mvec_cmn[iasic] + getRandom();
 
 		int detid, stripid;
@@ -140,7 +148,7 @@ void ApplyDatabase::mod_ana(int &status)
 	if( this->bnkPutAll() ) status = ANL_SKIP;
 	
     }
-    
+    //cout << "ana end" << endl;
     /*
     if( TTreeLastOwn(m_outtree_name, module_name) == GX_OK ){
 	TTreeFill( m_outtree_name );
@@ -249,7 +257,8 @@ int ApplyDatabase::bnkGetAll()
     //m_nasic = 0;
     for(int i=0; i<8; ++i){
 	mvec_hitnum[i] = bnk_get<unsigned short>("hitnum"+to_string(i));
-	mvec_cmn[i] = bnk_get<unsigned short>("cmn"+to_string(i));	
+	mvec_cmn[i] = bnk_get<unsigned short>("cmn"+to_string(i));
+	//cout << i << "," << mvec_hitnum[i] << endl;
 	bnk_get<unsigned short>("adc"+to_string(i), &mvec_adc[i], 0, mvec_hitnum[i]);
 	bnk_get<unsigned short>("index"+to_string(i), &mvec_index[i], 0, mvec_hitnum[i]);
 	//++m_nasic;

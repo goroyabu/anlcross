@@ -2,7 +2,8 @@
    @file ReadTTree.hpp
    @author Goro Yabu
    @date 2019/04/17
-   @version 1.0
+   @date 2019/06/05 v2.0 Change how to read branch from using TTreeReader -> SetBranchAddress with bnk_ptr
+   @version 2.0
 **/
 #ifndef ReadTTree_hpp
 #define ReadTTree_hpp
@@ -26,6 +27,8 @@ protected:
     TTreeReader m_tree_reader;
     std::string m_file_name;
     std::string m_tree_name;
+    long int m_current_entry;
+    long int m_max_entry;
     
 public:
     ReadTTree();
@@ -50,6 +53,11 @@ public:
     int read_branch(std::string key, TTreeReaderValue<T>& value);
     template<typename T>
     int read_branch_array(std::string key, TTreeReaderArray<T>& array, int maxsize=1);
+
+    template<typename T>
+    int read_branch(std::string key);
+    template<typename T>
+    int read_branch_array(std::string key, int maxsize);
     
     static TFile * OpenTFile(std::string name, std::string option);
     static int GetTTreeReader(std::string name, TFile * file, TTreeReader* reader);
@@ -92,4 +100,27 @@ int ReadTTree::put_branch_array(TTreeReaderArray<T>& array, int size)
      return anlcross::ANL_NG;}
     return anlcross::ANL_OK;
 }
+template<typename T>
+int ReadTTree::read_branch(std::string key)
+{
+    bnk::bnk_def<T>(key);
+    bnk::bnk_resize<T>(key, 1);
+    if( !(m_tree_reader.GetTree())->FindBranch(key.c_str()) ){
+	return anlcross::ANL_NG;
+    }
+    m_tree_reader.GetTree()->SetBranchAddress(key.c_str(), bnk::bnk_ptr<T>(key));
+    return anlcross::ANL_OK;
+}
+template<typename T>
+int ReadTTree::read_branch_array(std::string key, int maxsize)
+{
+    bnk::bnk_def<T>(key, maxsize);
+    bnk::bnk_resize<T>(key, maxsize);
+    if( !(m_tree_reader.GetTree())->FindBranch(key.c_str()) ){
+	return anlcross::ANL_NG;
+    }
+    m_tree_reader.GetTree()->SetBranchAddress(key.c_str(), bnk::bnk_ptr<T>(key));
+    return anlcross::ANL_OK;
+}
+
 #endif

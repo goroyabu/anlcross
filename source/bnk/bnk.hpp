@@ -2,7 +2,8 @@
    @file bnk.hpp
    @author Goro Yabu
    @date 2018/11/23
-   @version 1.0
+   @date 2019/06/05 v1.2 Add bnk_resize()
+   @version 1.2
 **/
 #ifndef bnk_hpp
 #define bnk_hpp
@@ -118,20 +119,25 @@ namespace bnk
 	{
 	    if( !out ) return BNK_NG;
 	    out->clear();
-	    
+	    //std::cout << begin << "=b, " << end << "=e" << std::endl;
 	    if( begin<0 || m_used_size<=begin ) return BNK_NG;
 	    if( end<0 || m_used_size<end ) end = m_used_size;
 	    if( end<=begin ) return BNK_NG; 
 	    
 	    //for(int i=begin; i<end; ++i) out->push_back(m_array[i]);
 	    for(int i=begin; i<end; ++i) out->emplace_back(m_array[i]);
-	    ++m_num_get;
+	    //++m_num_get; std::cout << "osize=" << out->size() << std::endl;
 	    
 	    return BNK_OK;
 	}
 	T* GetPtr()
 	{
 	    return m_array.data();
+	}
+	void Resize(int size=0)
+	{
+	    m_array.resize(size);
+	    m_used_size=size;
 	}
 	
 	virtual void List()
@@ -227,6 +233,12 @@ namespace bnk
     {
 	int index; if( bnk_key(key, &index) == BNK_NG ) return nullptr;
 	return ((databank<T>*)get_bank(index))->GetPtr();
+    }
+    template<typename T> int bnk_resize(const std::string key, const int size=0)
+    {
+	int index; if( bnk_key(key, &index) == BNK_NG ) return BNK_NG;
+	((databank<T>*)get_bank(index))->Resize(size);
+	return BNK_OK;
     }
     
     /** **/

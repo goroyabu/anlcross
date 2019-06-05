@@ -15,9 +15,13 @@ INCLUDE_DIR := $(TOP_DIR)/include
 #--------------------------------------------------
 
 CXX = g++
-ROOTCFLAGS = `root-config --cflags --ldflags`
-ROOTGLIBS  = `root-config --glibs`
-CXXFLAGS = $(ROOTCFLAGS) -std=c++11 -MMD -MP -o3
+#ROOTCFLAGS = `root-config --cflags --ldflags`
+ROOTCFLAGS = -I`root-config --incdir`
+#ROOTGLIBS  = `root-config --glibs`
+ROOTGLIBS  = -L/usr/local/Cellar/root/6.16.00_3/lib/root -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lROOTDataFrame -lpthread -lm -ldl
+#-L`root-config --libdir`
+#CXXFLAGS = $(ROOTCFLAGS) -std=c++11 -MMD -MP -o3
+CXXFLAGS = $(ROOTCFLAGS) -MMD -MP -std=c++17
 CXXLIBS = $(ROOTGLIBS) -lCOMCLI
 #--------------------------------------------------
 
@@ -49,7 +53,7 @@ endif
 ifneq ($(LIB),)
 	mkdir -p $(LIB_DIR)
 	install $(lib) $(LIB_DIR)/
-	$(foreach temp, $(installed_lib), $(shell echo install_name_tool -id $(temp) $(temp)))
+	#$(foreach temp, $(installed_lib), $(shell echo install_name_tool -id $(temp) $(temp)))
 endif
 
 $(BUILD_DIR) :

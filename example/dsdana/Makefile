@@ -17,9 +17,11 @@ LIB_DIR := $(TOP_DIR)/lib
 #--------------------------------------------------
 
 CXX = g++
-ROOTCFLAGS = `root-config --cflags --ldflags`
-ROOTGLIBS  = `root-config --glibs`
-CXXFLAGS = $(ROOTCFLAGS) -std=c++11 -MMD -MP -o3
+#ROOTCFLAGS = `root-config --cflags --ldflags`
+ROOTCFLAGS = -I`root-config --incdir`
+#ROOTGLIBS  = `root-config --glibs`
+ROOTGLIBS = -L`root-config --libdir` -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lROOTDataFrame -lpthread -lm -ldl
+CXXFLAGS = $(ROOTCFLAGS) -std=c++17 -MMD -MP
 CXXLIBS = $(ROOTGLIBS) -lANLCross -lCOMCLI
 #--------------------------------------------------
 

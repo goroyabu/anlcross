@@ -156,7 +156,8 @@ int anlcross::anl_read_data()
     ievent = 0; irecv = 0; frq_count = 0; nest_level = 0;
     while( n_rest_events == -1 || (ievent != n_rest_events && irecv  != -n_rest_events) ){
 	ievent++; nevent = ievent; frq_count++;
-	
+
+	//std::cout << "Event.... " << ievent << "(" << irecv << ")" << std::endl; anl_flush();
 	if( frq_count == 1 ){ std::cout << "Event.... " << ievent << "(" << irecv << ")" << std::endl; anl_flush(); }
 	if( frq_count == event_freq ) frq_count = 0;
 	
@@ -167,12 +168,14 @@ int anlcross::anl_read_data()
 		status = ANL_OK;
 		
 		if( is_module_on(imodule) ){
+		    //std::cout << "imodule " << imodule << std::endl;
 		    get_count(imodule)->entry++;
 		    status = anl_routine_ana(imodule, nevent, eventid);
+		    //std::cout << "ok" << std::endl;
 		}
 		
 		if( status != ANL_OK ){
-		    if( status == ANL_QUIT ) status = ANL_ENDLOOP + ANL_DISCARD + ANL_NOCOUNT;
+		    if( status == ANL_QUIT ){ status = ANL_ENDLOOP + ANL_DISCARD + ANL_NOCOUNT; } 
 		    else if( status == ANL_SKIP ) status = ANL_DISCARD;		      
 		    else if( status == ANL_LOOP ) status = ANL_NEWROOT;
 		    
