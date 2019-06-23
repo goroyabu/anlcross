@@ -76,7 +76,8 @@ namespace bnk
 	databank(const std::string name, int size = 1)
 	    : databank_base(name, size)
 	{
-	    if(size<0) size = 1; m_array.reserve(size);
+	    if(size<0) size = 1;
+	    m_array.reserve(size);
 	}
 	~databank() {}
 

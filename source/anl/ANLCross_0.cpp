@@ -13,7 +13,8 @@ namespace anlcross
     static std::map<std::string, int> gModuleIndexTable;
     static std::vector<ANLModuleBase*> gModuleChain;
     static std::vector<bool> gModuleSwitch;
-    static useconds_t mUSleepTime;
+    //static useconds_t mUSleepTime;
+    std::chrono::microseconds mUSleepTime;
     static std::vector<anlcross::analysis_status> mCount;
     static int mStatus = ANL_FALSE;
 }
@@ -142,7 +143,7 @@ int anlcross::anl_init()
     if( evs::EvsIz()!=ANL_OK ){
 	std::cout << "ANL:: EVS initialization failed. " << std::endl; return ANL_NG;
     }
-    mUSleepTime = 1000000;
+    mUSleepTime = std::chrono::microseconds(1000000);
     mStatus = ANL_TRUE;
     com_cli::init("ANL","~/.anl_hist");
     

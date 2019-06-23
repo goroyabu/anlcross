@@ -1,8 +1,8 @@
 /**
    @file ReadTTree.cpp
    @author Goro Yabu
-   @date 2019/04/17
-   @version 1.0
+   @date 2019/06/21 v2.1
+   @version 2.1
 **/
 #include "ReadTTree.hpp"
 
@@ -10,7 +10,7 @@ using namespace anlcross;
 using namespace std;
 
 ReadTTree::ReadTTree() :
-    ANLModuleBase("ReadTTree", "1.0"),
+    ANLModuleBase("ReadTTree", "2.1"),
     m_file(nullptr), m_file_name("in.root"), m_tree_name("TTree")
 {
 }
@@ -44,27 +44,11 @@ void ReadTTree::mod_com(int &status)
 void ReadTTree::mod_ana(int &status)
 {
     status = ANL_OK;
-    
-    //cout << m_tree_reader.GetTree()->GetName() << endl;
-    //cout << m_tree_reader.GetEntries(true) << endl;
-    /*
-    if( m_tree_reader.Next()==false ){
-	cout << m_tree_reader.GetCurrentEntry() << endl;
-	cout << "last" << endl;
-	status = ANL_QUIT;
-    }
-    */
-
-    //cout << "read modana" << endl;
     ++m_current_entry;
-    //cout << m_current_entry << "/" << m_max_entry << endl;
     if(m_current_entry>=m_max_entry){
-	//cout << "last" << endl;
 	status = ANL_QUIT;
     }else{
 	m_tree_reader.GetTree()->GetEntry(m_current_entry);
-	//cout << "get" << endl;
-	//status = put_branch_value();
 	status = ANL_OK;
     }
 }
@@ -77,10 +61,12 @@ int ReadTTree::set_read_branch()
 {
     return ANL_OK;
 }
+/*
 int ReadTTree::put_branch_value()
 {
     return ANL_OK;
 }
+*/
 TFile * ReadTTree::OpenTFile(std::string name, std::string option)
 {
     TFile * file = new TFile(name.c_str(), option.c_str());
@@ -97,6 +83,7 @@ int ReadTTree::GetTTreeReader(std::string name, TFile * file, TTreeReader* reade
     cout << name << endl;
     return ANL_OK;
 }
+/*
 int ReadTTree::IsValidValue(ROOT::Internal::TTreeReaderValueBase& value)
 {
    if(value.GetSetupStatus() < 0) {
@@ -106,3 +93,4 @@ int ReadTTree::IsValidValue(ROOT::Internal::TTreeReaderValueBase& value)
    }
    return ANL_OK;
 }
+*/

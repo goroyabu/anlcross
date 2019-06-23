@@ -2,7 +2,8 @@
    @file CoupleHit.hpp
    @author Goro Yabu
    @date 2018/11/27
-   @version 1.0
+   @date 2019/06/20 v2.0
+   @version 2.0
 **/
 #ifndef CoupleHit_hpp
 #define CoupleHit_hpp
@@ -14,10 +15,9 @@
 #include <TH1D.h>
 #include <TH2D.h>
 
-//#include "BnkROOT.hpp"
-//#include "GXTTreeIO.hpp"
 #include <ANLModuleBase.hpp>
 #include <ANLCross.hpp>
+
 #include "ReadDatabase.hpp"
 
 class CoupleHit : public anlcross::ANLModuleBase
@@ -27,18 +27,9 @@ private:
     std::vector<int> m_sorted_index_y;
     ReadDatabase * mDatabase;
     std::vector<int> m_detid_list;
-    //TFile * mInFile;
-    //TFile * mOutFile;
-    //TTree * mInTree;
-    //TTree * mOutTree;
     TH1D * m_spect;
     TH2D * m_image;
-    
-    /* parameter */
-    //std::string m_infile_name, m_intree_name;
-    //std::string m_outfile_name, m_outtree_name;
-    //bool m_save_branch;
-    
+        
     /* input */
     int m_nsignal_x_lv2;
     int m_nsignal_y_lv2;

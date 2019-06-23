@@ -7,8 +7,8 @@ SOURCE_DIR := source/
 BUILD_DIR := build/
 BIN_DIR := bin/
 
-CXX = g++
-CXXFLAGS = -std=c++11 -o3 `root-config --cflags`
+CXX = clang
+CXXFLAGS =  -MMD -MP -std=c++17 -Wall -Wextra `root-config --cflags`
 CXXLIBS = -lCOMCLI `root-config --libs`
 
 all : $(addprefix $(BUILD_DIR),$(TARGET))

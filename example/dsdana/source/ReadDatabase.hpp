@@ -13,12 +13,14 @@
 #include <map>
 #include <vector>
 
+#include <TFile.h>
+#include <TTree.h>
 #include <TSpline.h>
 
 #include <com_cli.hpp>
 
 #include "ANLModuleBase.hpp"
-#include "GXTTreeIO.hpp"
+//#include "GXTTreeIO.hpp"
 
 class ReadDatabase : public anlcross::ANLModuleBase
 {
@@ -35,6 +37,7 @@ private:
 	int detid, stripid;
 	float posx, posy, posz;
 	float widthx, widthy, widthz;
+	int badch;
 	float ethre;
 	TSpline3 * calfunc;
     };
@@ -53,6 +56,7 @@ private:
     int m_detid, m_stripid;
     float m_posx, m_posy, m_posz;
     float m_widthx, m_widthy, m_widthz;
+    int m_badch;
     float m_ethre;
     TSpline3 * m_calfunc;
 
@@ -90,7 +94,7 @@ public:
     int GetWidthZ(int detid, int stripid, float* pos){ return get_widthz(detid, stripid, pos); }
     int GetEthre(int detid, int stripid, float* thre){ return get_ethre(detid, stripid, thre); }
     int GetEPI(int asicid, int asicch, float pha, float* epi){ return get_epi(asicid, asicch, pha, epi); }
-    int GetBadch(int asicid, int asicch, int* badch) {return anlcross::ANL_NG;}
+    int GetBadch(int asicid, int asicch, int* badch);// {return anlcross::ANL_NG;}
 
     int FindStrip(int asicid, int asicch, int* detid, int* stripid);
     bool IsXside(int detid, int stripid)
@@ -104,7 +108,7 @@ public:
     //int GetNasic() const { return m_asicid_list.size(); }
     int GetNallch() const { return mDatabaseList.size(); }
     bool ExistDetID(int detid) const {
-	if( std::find(mDetIDList.begin(), mDetIDList.end(), m_detid) == mDetIDList.end() )
+	if( std::find(mDetIDList.begin(), mDetIDList.end(), detid) == mDetIDList.end() )
 	    return false;
 	return true;
     }

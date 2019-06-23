@@ -1,9 +1,10 @@
 /**
    @file ReadTTree.hpp
    @author Goro Yabu
-   @date 2019/04/17
+   @date 2019/04/17 v1.0
    @date 2019/06/05 v2.0 Change how to read branch from using TTreeReader -> SetBranchAddress with bnk_ptr
-   @version 2.0
+   @date 2019/06/21 v2.1 Delete unused functions.
+   @version 2.1
 **/
 #ifndef ReadTTree_hpp
 #define ReadTTree_hpp
@@ -14,8 +15,6 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TTreeReader.h>
-#include <TTreeReaderValue.h>
-#include <TTreeReaderArray.h>
 
 #include <ANLModuleBase.hpp>
 #include <ANLCross.hpp>
@@ -42,8 +41,9 @@ public:
     void mod_exit(int &status);
 
     virtual int set_read_branch();
-    virtual int put_branch_value();
+    //virtual int put_branch_value();
 
+    /*
     template<typename T>
     int put_branch(TTreeReaderValue<T>& value);
     template<typename T>
@@ -53,7 +53,7 @@ public:
     int read_branch(std::string key, TTreeReaderValue<T>& value);
     template<typename T>
     int read_branch_array(std::string key, TTreeReaderArray<T>& array, int maxsize=1);
-
+    */
     template<typename T>
     int read_branch(std::string key);
     template<typename T>
@@ -61,9 +61,10 @@ public:
     
     static TFile * OpenTFile(std::string name, std::string option);
     static int GetTTreeReader(std::string name, TFile * file, TTreeReader* reader);
-    static int IsValidValue(ROOT::Internal::TTreeReaderValueBase& value);
+    //static int IsValidValue(ROOT::Internal::TTreeReaderValueBase& value);
 };
 
+/*
 template<typename T>
 int ReadTTree::read_branch(std::string key, TTreeReaderValue<T>& value)
 {
@@ -100,6 +101,7 @@ int ReadTTree::put_branch_array(TTreeReaderArray<T>& array, int size)
      return anlcross::ANL_NG;}
     return anlcross::ANL_OK;
 }
+*/
 template<typename T>
 int ReadTTree::read_branch(std::string key)
 {

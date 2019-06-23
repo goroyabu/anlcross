@@ -48,9 +48,11 @@ public:
     static TFile * OpenTFile(std::string name, std::string option);
 
     template<typename T>
-    int define_branch(std::string key, T* value, std::string leaflist);
+    int define_branch(std::string key, std::string leaflist);
+    //int define_branch(std::string key, T* value, std::string leaflist);
     template<typename T>
-    int define_branch(std::string key, std::vector<T>* array,
+    int define_branch(std::string key,
+		      //int define_branch(std::string key, std::vector<T>* array,
 		      std::string leaflist, int maxsize);
 
     template<typename T>
@@ -60,7 +62,8 @@ public:
 };
 
 template<typename T>
-int WriteTTree::define_branch(std::string key, T* value, std::string leaflist)
+int WriteTTree::define_branch(std::string key, //T* value,
+			      std::string leaflist)
 {
     if( bnk::bnk_is_def(key)==bnk::BNK_NG ) return anlcross::ANL_NG;
     //if( !m_tree->Branch(key.c_str(), value, leaflist.c_str()) ) return anlcross::ANL_NG;
@@ -68,11 +71,11 @@ int WriteTTree::define_branch(std::string key, T* value, std::string leaflist)
     return anlcross::ANL_OK;
 }
 template<typename T>
-int WriteTTree::define_branch(std::string key, std::vector<T>* array,
+int WriteTTree::define_branch(std::string key, //std::vector<T>* array,
 			     std::string leaflist, int maxsize)
 {
     if( bnk::bnk_is_def(key)==bnk::BNK_NG ) return anlcross::ANL_NG;
-    array->resize(maxsize);
+    //array->resize(maxsize);
     //if( !m_tree->Branch(key.c_str(), array->data(), leaflist.c_str()) ) return anlcross::ANL_NG;
     if( !m_tree->Branch(key.c_str(), bnk::bnk_ptr<T>(key), leaflist.c_str()) ) return anlcross::ANL_NG;
     return anlcross::ANL_OK;

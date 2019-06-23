@@ -1,20 +1,31 @@
+/**
+   @file ReadDatabase.cpp
+   @author Goro Yabu
+   @date 2019/06/20
+   @version 2.0
+**/
 #include "ReadDatabase.hpp"
+
+#include <iostream>
+#include <iomanip>
+
 using namespace anlcross;
 ReadDatabase::ReadDatabase() : mInFile(nullptr), mDatabase(nullptr), m_calfunc(nullptr)
 {
     module_name = "ReadDatabase";
-    module_version = "1.0";
+    module_version = "2.0";
     m_infile_name = "database.root";
     m_intree_name = "dbtree";
 }
 void ReadDatabase::mod_init(int &status)
 {
-    using namespace gxroot;
+    //using namespace gxroot;
     using namespace std;
 
     status = anlcross::ANL_OK;
 
-    mInFile = TFileOpen( m_infile_name, "read" );
+    //mInFile = TFileOpen( m_infile_name, "read" );
+    mInFile = new TFile( m_infile_name.c_str(), "read");
     if( !mInFile || mInFile->IsZombie() ) status = ANL_NG;
     else{    
 	//mInFile = (TFile*)gxroot::GetTFile(m_infile_name);
@@ -30,6 +41,7 @@ void ReadDatabase::mod_init(int &status)
 	if( 0 > mDatabase->SetBranchAddress("widthx", &m_widthx) ) status = anlcross::ANL_NG;
 	if( 0 > mDatabase->SetBranchAddress("widthy", &m_widthy) ) status = anlcross::ANL_NG;
 	if( 0 > mDatabase->SetBranchAddress("widthz", &m_widthz) ) status = anlcross::ANL_NG;
+	if( 0 > mDatabase->SetBranchAddress("badch", &m_badch) ) status = anlcross::ANL_NG;
 	if( 0 > mDatabase->SetBranchAddress("ethre", &m_ethre) ) status = anlcross::ANL_NG;
 	if( 0 > mDatabase->SetBranchAddress("calfunc", &m_calfunc) ) status = anlcross::ANL_NG;
 
@@ -57,6 +69,7 @@ void ReadDatabase::mod_init(int &status)
 		temp->widthx = m_widthx;
 		temp->widthy = m_widthy;
 		temp->widthz = m_widthz;
+		temp->badch = m_badch;
 		temp->ethre = m_ethre;
 		temp->calfunc = (TSpline3*)m_calfunc->Clone();
 		mDatabaseList.push_back(temp);
@@ -88,8 +101,9 @@ void ReadDatabase::mod_endrun(int &status)
 }
 void ReadDatabase::mod_exit(int &status)
 {
-    using namespace gxroot;
-    TFileClose(m_infile_name);
+    //using namespace gxroot;
+    //TFileClose(m_infile_name);
+    mInFile->Delete();
     status = ANL_OK;
     std::cout << std::endl;
 }
@@ -176,9 +190,19 @@ int ReadDatabase::get_epi(int asicid, int asicch, float pha, float* epi)
     *epi = mDatabaseList[index]->calfunc->Eval(pha);
     return ANL_OK;
 }
+int ReadDatabase::GetBadch(int asicid, int asicch, int* badch)
+{
+    int detid, stripid;
+    if( find_strip(asicid, asicch, &detid, &stripid) == ANL_NG ) return ANL_NG; 
+    int index;
+    if( find_index(detid, stripid, &index) == ANL_NG ) return ANL_NG;
+    *badch = mDatabaseList[index]->badch;
+    return ANL_OK;
+}
 int ReadDatabase::GetDetIDList(std::vector<int>* detid_list)
 {
     std::sort( mDetIDList.begin(), mDetIDList.end() );
     *detid_list = mDetIDList;
     return ANL_OK;
 }
+

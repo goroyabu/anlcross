@@ -65,14 +65,14 @@ void WriteTTree::mod_exit(int &status)
 }
 int WriteTTree::set_write_branch()
 {
-    define_branch("livetime", &m_livetime, "livetime/i");
-    define_branch("adc7", &m_adc7, "adc7[64]/s", 64);
+    //define_branch("livetime", &m_livetime, "livetime/i");
+    //define_branch("adc7", &m_adc7, "adc7[64]/s", 64);
     return ANL_OK;
 }
 int WriteTTree::get_branch_value()
 {
-    get_branch("livetime", &m_livetime);
-    get_branch("adc7", &m_adc7);
+    //get_branch("livetime", &m_livetime);
+    //get_branch("adc7", &m_adc7);
     return ANL_OK;
 }
 TFile * WriteTTree::OpenTFile(std::string name, std::string option)

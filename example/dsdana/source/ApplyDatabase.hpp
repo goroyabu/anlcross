@@ -3,7 +3,8 @@
    @author Goro Yabu
    @date 2018/11/27
    @date 2019/04/16 v1.1
-   @version 1.1
+   @date 2019/06/20 v1.2
+   @version 1.2
 **/
 #ifndef ApplyDatabase_hpp
 #define ApplyDatabase_hpp
@@ -13,7 +14,6 @@
 #include <TRandom.h>
 #include <TH2D.h>
 
-//#include "GXTTreeIO.hpp"
 #include <bnk.hpp>
 #include "ANLModuleBase.hpp"
 #include "ANLCross.hpp"
@@ -24,19 +24,10 @@ class ApplyDatabase : public anlcross::ANLModuleBase
 private:
     ReadDatabase * mDatabase;
     TRandom * mRandom;
-    //TFile * mInFile;
-    //TFile * mOutFile;
-    //TTree * mInTree;
-    //TTree * mOutTree;
     TH2D * m_histall;
     TH2D * m_spectall;
     TH2D * m_multi_hist;
     
-    /* parameter */
-    //std::string m_infile_name, m_intree_name;
-    //std::string m_outfile_name, m_outtree_name;
-    //bool m_save_branch;
-
     /* input */
     int m_nasic;
     std::vector<unsigned short> mvec_hitnum;

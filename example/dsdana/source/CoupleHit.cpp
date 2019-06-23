@@ -2,11 +2,12 @@
    @file CoupleHit.cpp
    @author Goro Yabu
    @date 2018/12/03
-   @version 1.0
+   @date 2019/06/20 v2.0 Implement the multi-hit analysis
+   @version 2.0
 **/
 #include "CoupleHit.hpp"
 using namespace anlcross;
-CoupleHit::CoupleHit() : ANLModuleBase("CoupleHit", "1.0"), mDatabase(nullptr),
+CoupleHit::CoupleHit() : ANLModuleBase("CoupleHit", "2.0"), mDatabase(nullptr),
 			 m_spect(nullptr), m_image(nullptr)
 {
 }
@@ -22,14 +23,6 @@ void CoupleHit::mod_init(int &status)
     
     status = this->bnkDefAll();
 
-    //evs::EvsDef("1Pt-1Al Merged signals");
-    //evs::EvsDef("1Pt-2Al Merged signals");
-    //evs::EvsDef("2Pt-1Al Merged signals");
-    //evs::EvsDef("2Pt-2Al Merged signals");
-    //evs::EvsDef("Over 3  Merged signals");
-    //evs::EvsDef("1     Hit Event");
-    //evs::EvsDef("2     Hit Event");
-    //evs::EvsDef("Over3 Hit Event");
     EvsDef("nhit_lv3==1");
     EvsDef("nhit_lv3==2");
     EvsDef("nhit_lv3==3");
@@ -49,7 +42,6 @@ void CoupleHit::mod_com(int &status)
 }
 void CoupleHit::mod_ana(int &status)
 {
-    using namespace gxroot;
     status = ANL_OK;
 
     this->clearVectorAll();
@@ -72,7 +64,6 @@ void CoupleHit::mod_endrun(int &status)
 void CoupleHit::mod_exit(int &status)
 {
     status = ANL_OK;
-    //std::cout << std::endl;
 }
 int CoupleHit::bnkDefAll()
 {

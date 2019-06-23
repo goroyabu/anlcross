@@ -41,11 +41,11 @@ branch_info ask_branch()
     using namespace com_cli;
     
     string name = "Branch";
-    read_value<string>("New Branch Name ('-1' to exit)", &name);
+    com_cli::read_value("New Branch Name ('-1' to exit)", &name);
     if(name=="-1") return branch_info("-1","");
 
     string type = "int";
-    read_value<string>("                    Value Type", &type);
+    com_cli::read_value("                    Value Type", &type);
     
     if(type=="I") type = "int";
     else if(type=="S") type = "short int";
@@ -57,12 +57,12 @@ branch_info ask_branch()
     else if(type=="D") type = "double";
 
     int size = 1;
-    read_value<int>   ("   Array Size (if<0, variable)", &size);
+    com_cli::read_value("   Array Size (if<0, variable)", &size);
     if(size==1) return branch_info(name, type);
     else if(size>1) return branch_info(name, type, size);
     
     string sizerefbranch = "Nsignal";
-    read_value<string>("           Refered Branch Name", &sizerefbranch);
+    com_cli::read_value("           Refered Branch Name", &sizerefbranch);
     return branch_info(name, type, -size, sizerefbranch);
 }    
 int set_branch(std::vector<branch_info>* vbranch)
@@ -155,11 +155,13 @@ std::string header_read_tree(std::string tree, std::string author,
 
     for(auto branch : vbranch){
 	if(branch.isarray){
-	    ss << left << setw(37) << "    TTreeReaderArray<"+branch.type+">";
-	    ss << setw(22) << "m_"+branch.name+";" << endl;
+	    //ss << left << setw(37) << "std::vector<"branch.type+">";
+	    //ss << left << setw(37) << "    TTreeReaderArray<"+branch.type+">";
+	    //ss << setw(22) << "m_"+branch.name+";" << endl;
 	}else{
-	    ss << left << setw(37) << "    TTreeReaderValue<"+branch.type+">";
-	    ss << setw(22) << "m_"+branch.name+";" << endl;
+	    //ss << left << setw(37) << branch.type;
+	    //ss << left << setw(37) << "    TTreeReaderValue<"+branch.type+">";
+	    //ss << setw(22) << "m_"+branch.name+";" << endl;
 	}
     }
     ss << endl;
@@ -201,6 +203,7 @@ std::string implement_read_tree(std::string tree, std::string author,
     ss << "    ReadTTree(\"Read" << Tree << "\", \"1.0\", \"" << tree << "\"" << ")," << endl;
     ss << "    " << endl;
 
+    /*
     int index = 0;
     for(auto branch : vbranch){
 	ss << left << setw(26) << "    m_"+branch.name << "(m_tree_reader,";
@@ -209,18 +212,22 @@ std::string implement_read_tree(std::string tree, std::string author,
 	else{ ss << endl;}
 	++index;
     }
+    */
     ss << "{" << endl;
     ss << "}" << endl;
     ss << "int Read" << Tree << "::set_read_branch()" << endl;
     ss << "{" << endl;
     for(auto branch : vbranch){
         if(branch.isarray){
-	    ss << "    read_branch_array("<< right << setw(23) << "\""+branch.name+"\",";
-	    ss << right << setw(22) << "m_"+branch.name;
-	    ss << "," << setw(5) << branch.size << ");" << endl;
+	    ss << "    read_branch_array<"+branch.type+">("<< right << setw(23) << "\""+branch.name+"\",";
+	    //ss << "    read_branch_array("<< right << setw(23) << "\""+branch.name+"\",";
+	    //ss << right << setw(22) << "m_"+branch.name;
+	    //ss << "," << setw(5) << branch.size << ");" << endl;
+	    ss << setw(5) << branch.size << ");" << endl;
 	}else{
-	    ss << "    read_branch("<< right << setw(29) << "\""+branch.name+"\",";
-	    ss << right << setw(22) << "m_"+branch.name;   
+	    ss << "    read_branch<"+branch.type+">("<< right << setw(29) << "\""+branch.name+"\"";
+	    //ss << "    read_branch("<< right << setw(29) << "\""+branch.name+"\",";
+	    //ss << right << setw(22) << "m_"+branch.name;   
 	    ss << ");" << endl;
 	}
     }
@@ -229,6 +236,7 @@ std::string implement_read_tree(std::string tree, std::string author,
     ss << "}" << endl;
     ss << "int Read" << Tree << "::put_branch_value()" << endl;
     ss << "{" << endl;
+    /*
     for(auto branch : vbranch){
 	if(branch.isarray){
 	    ss << "    put_branch_array(";
@@ -240,6 +248,7 @@ std::string implement_read_tree(std::string tree, std::string author,
 	    ss << "    put_branch("<< right << setw(29) << "m_"+branch.name+");" << endl;
     }
     ss << endl;
+    */
     ss << "    return ANL_OK;" << endl;
     ss << "}" << endl;
         
@@ -343,6 +352,8 @@ std::string header_write_tree(std::string tree, std::vector<branch_info>& vbranc
     ss << "" << endl;
     ss << "class Write" << tree << " : public WriteTTree" << endl;
     ss << "{" << endl;
+
+    /*
     ss << "protected:" << endl;
 
     for(auto branch : vbranch){
@@ -351,7 +362,7 @@ std::string header_write_tree(std::string tree, std::vector<branch_info>& vbranc
 	else
 	    ss << left << setw(38) << "    "+branch.type+" " << "m_"+branch.name << ";" << endl;
     }
-	
+    */	
     //ss << "    unsigned int m_unixtime;" << endl;
     //ss << "    std::vector<unsigned short> m_adc0;" << endl;
     ss << "    " << endl;
@@ -359,7 +370,7 @@ std::string header_write_tree(std::string tree, std::vector<branch_info>& vbranc
     ss << "    Write" << tree << "();" << endl;
     ss << "    ~Write" << tree << "(){}" << endl;
     ss << "    virtual int set_write_branch();" << endl;
-    ss << "    virtual int get_branch_value();" << endl;
+    //ss << "    virtual int get_branch_value();" << endl;
     ss << "};" << endl;
     ss << "#endif" << endl;
 
@@ -395,13 +406,13 @@ std::string implement_write_tree(std::string tree, std::vector<branch_info>& vbr
     ss << "{" << endl;
     for(auto branch : vbranch){
 	if(branch.isarray){
-	    ss << "    define_branch(" << right << setw(23) << "\""+branch.name+"\",";
-	    ss << right << setw(24) << "&m_"+branch.name+"," << endl;
+	    ss << "    define_branch<"+branch.type+">(" << right << setw(23) << "\""+branch.name+"\",";
+	    //ss << right << setw(24) << "&m_"+branch.name+"," << endl;
 	    ss << "                  " << right << setw(22) << "\""+make_leaflist(branch)+"\",";
 	    ss << right << setw(5) << branch.size << ");" << endl;
 	}else{
-	    ss << "    define_branch(" << right << setw(23) << "\""+branch.name+"\",";
-	    ss << right << setw(24) << "&m_"+branch.name+"," << endl;
+	    ss << "    define_branch<"+branch.type+">(" << right << setw(23) << "\""+branch.name+"\",";
+	    //ss << right << setw(24) << "&m_"+branch.name+"," << endl;
 	    ss << "                  " << right << setw(24) << "\""+make_leaflist(branch)+"\");" << endl;
 	}
     }
@@ -409,6 +420,8 @@ std::string implement_write_tree(std::string tree, std::vector<branch_info>& vbr
     //ss << "    define_branch(\"adc0\", &m_adc0, \"adc0[64]/s\", 64);" << endl;
     ss << "    return ANL_OK;" << endl;
     ss << "}" << endl;
+
+    /*
     ss << "int Write" << Tree << "::get_branch_value()" << endl;
     ss << "{" << endl;
     for(auto branch : vbranch){
@@ -420,7 +433,7 @@ std::string implement_write_tree(std::string tree, std::vector<branch_info>& vbr
     
     ss << "    return ANL_OK;" << endl;
     ss << "}" << endl;
-    
+    */
     return ss.str();
 }
 std::string print_write_tree(std::string tree, std::vector<branch_info>& vbranch, bool force)

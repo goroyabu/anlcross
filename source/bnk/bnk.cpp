@@ -92,7 +92,7 @@ int bnk::bnk_export(const std::string key)
 //template<> std::string bnk::value_type<float>(){ return "float"; }
 //template<> std::string bnk::value_type<double>(){ return "double"; }
 
-int bnk::BnkIni(int buffer_size)
+int bnk::BnkIni([[maybe_unused]] int buffer_size)
 {
     return bnk_init();
 }
@@ -112,10 +112,12 @@ int bnk::BnkNdf(void)
 {
     return bnk_ndef();
 }
+/*
 int bnk::BnkEqv(char* new_key, int size, char* old_key, int start)
 {
     return 0;
 }
+*/
 void bnk::BnkLst(void)
 {
     bnk_list();
