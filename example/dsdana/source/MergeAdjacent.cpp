@@ -15,7 +15,7 @@ void MergeAdjacent::mod_init(int &status)
 {
     using namespace evs;
     status = ANL_OK;
-    std::cout << "MergeAdjacent::mod_init" << std::endl;
+    //std::cout << "MergeAdjacent::mod_init" << std::endl;
     m_histogram = new TH1D("hist_dist_epi","hist_dist_epi;pos;epi",100,-0.5,99.5);
     
     mDatabase = (ReadDatabase*)get_module("ReadDatabase");
@@ -33,13 +33,8 @@ void MergeAdjacent::mod_init(int &status)
     EvsDef("nsignal_x_lv2==1 && n_merged_strips_x_lv2==2");
     EvsDef("nsignal_y_lv2==1 && n_merged_strips_y_lv2==1");
     EvsDef("nsignal_y_lv2==1 && n_merged_strips_y_lv2==2");
-    //evs::EvsDef("1Pt-1Al Merged signals");
-    //evs::EvsDef("1Pt-2Al Merged signals");
-    //evs::EvsDef("2Pt-1Al Merged signals");
-    //evs::EvsDef("2Pt-2Al Merged signals");
-    //evs::EvsDef("Over 3  Merged signals");
     
-    std::cout << std::endl;
+    //std::cout << std::endl;
 }
 void MergeAdjacent::mod_his(int &status)
 {
@@ -83,7 +78,7 @@ void MergeAdjacent::mod_exit(int &status)
 {
     //m_histogram->Delete();
     status = ANL_OK;
-    std::cout << std::endl;
+    //std::cout << std::endl;
 }
 int MergeAdjacent::bnkDefAll()
 {

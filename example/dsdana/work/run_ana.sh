@@ -1,16 +1,14 @@
 #!/bin/sh
 
-if [ $# -ne 1 ]; then
-    echo "argv[1] = input file name"
-    exit 1
-fi
+app="../bin/dsdana"
 
-app="dsdana"
-infile=$1
-outfile=${infile/".root"/"_hittree.root"}
-calfile=database.root
-
-$app << EOF
+function ana ()
+{
+    infile=$1
+    outfile=${infile/".root"/"_hittree.root"}
+    calfile=database.root
+    
+    $app << EOF
 define_analysis
 6
 -1
@@ -28,3 +26,9 @@ read_data
 1000
 exit
 EOF
+}
+
+for data in $@
+do
+    ana $data
+done

@@ -1,51 +1,79 @@
-/**
-   @file WriteHittree.cpp
-   @author                      
-   @date                        
-   @version 1.0                 
-**/
+/*
+  @file WriteHittree.cpp
+  @author Goro Yabu                   
+  @date 2019/06/23 v2.0
+  @version 2.0
+*/
 #include "WriteHittree.hpp"
 
 using namespace anlcross;
 using namespace std;
 
 WriteHittree::WriteHittree() :
+    ANLModuleBase("WriteHittree", "1.0"),
+    m_file(nullptr), m_tree(nullptr),
+    m_file_name("in.root"), m_tree_name("TTree")
+{
+}
+
+/*
+WriteHittree::WriteHittree() :
     WriteTTree("WriteHittree", "1.0")
 {
 }
+*/
 void WriteHittree::mod_init(int &status)
 {
-    using namespace evs;
-    WriteTTree::mod_init(status);
-    status = ANL_OK;
-    EvsDef("ES1_1Hit_Pt1-Al1");
-    EvsDef("ES2_1Hit_Pt1-Al2");
-    EvsDef("ES3_1Hit_Pt2-Al1");
-    EvsDef("ES4_1Hit_Pt2-Al2");
+    //using namespace evs;
+
+    status = anlcross::ANL_OK;
+    
+    m_file = OpenTFile(m_file_name, "recreate");
+    if( !m_file ) status = anlcross::ANL_NG;
+    
+    if( status == anlcross::ANL_OK ){
+	m_tree = new TTree(m_tree_name.c_str(), m_tree_name.c_str());
+    }
+    
+    if( status == anlcross::ANL_OK )
+	status = set_write_branch();
+
+    status = anlcross::ANL_OK;
+    evs::EvsDef("ES1_1Hit_Pt1-Al1");
+    evs::EvsDef("ES2_1Hit_Pt1-Al2");
+    evs::EvsDef("ES3_1Hit_Pt2-Al1");
+    evs::EvsDef("ES4_1Hit_Pt2-Al2");
+}
+void WriteHittree::mod_com(int &status)
+{
+    status = anlcross::ANL_OK;
+    com_cli::read_value<std::string>("Output ROOT TFile Name ?", &m_file_name);
+    com_cli::read_value<std::string>("            TTree Name ?", &m_tree_name);
 }
 void WriteHittree::mod_ana(int &status)
 {
     using namespace bnk;
     using namespace evs;
-    status = ANL_OK;
+    status = anlcross::ANL_OK;
 
-    m_livetime = bnk_get<unsigned int>("livetime");
-    m_unixtime = bnk_get<unsigned int>("unixtime");
-    m_ext2ti_lower = bnk_get<unsigned int>("ext2ti_lower");
+    m_livetime = bnk::bnk_get<unsigned int>("livetime");
+    m_unixtime = bnk::bnk_get<unsigned int>("unixtime");
+    m_ext2ti_lower = bnk::bnk_get<unsigned int>("ext2ti_lower");
     
-    m_nhit_lv3 = bnk_get<int>("nhit_lv3");
-    bnk_get("detid_lv3", &m_detid_lv3, 0, m_nhit_lv3);
-    bnk_get("epi_lv3",   &m_epi_lv3,   0, m_nhit_lv3);
-    bnk_get("epi_x_lv3", &m_epi_x_lv3, 0, m_nhit_lv3);
-    bnk_get("epi_y_lv3", &m_epi_y_lv3, 0, m_nhit_lv3);
-    bnk_get("pos_x_lv3", &m_pos_x_lv3, 0, m_nhit_lv3);
-    bnk_get("pos_y_lv3", &m_pos_y_lv3, 0, m_nhit_lv3);
-    bnk_get("pos_z_lv3", &m_pos_z_lv3, 0, m_nhit_lv3);
+    m_nhit_lv3 = bnk::bnk_get<int>("nhit_lv3");
+    bnk::bnk_get("detid_lv3", &m_detid_lv3, 0, m_nhit_lv3);
+    bnk::bnk_get("epi_lv3",   &m_epi_lv3,   0, m_nhit_lv3);
+    bnk::bnk_get("epi_x_lv3", &m_epi_x_lv3, 0, m_nhit_lv3);
+    bnk::bnk_get("epi_y_lv3", &m_epi_y_lv3, 0, m_nhit_lv3);
+    bnk::bnk_get("pos_x_lv3", &m_pos_x_lv3, 0, m_nhit_lv3);
+    bnk::bnk_get("pos_y_lv3", &m_pos_y_lv3, 0, m_nhit_lv3);
+    bnk::bnk_get("pos_z_lv3", &m_pos_z_lv3, 0, m_nhit_lv3);
     
     //bnk_put("eventID", m_eventID);
     ++m_eventID;
 
-    int ihit = 0; int nbytes;
+    int ihit = 0;
+    //int nbytes;
     while( m_nhit_lv3 > ihit ){
         m_detid = m_detid_lv3[ihit];
         m_epi = m_epi_lv3[ihit];
@@ -65,10 +93,20 @@ void WriteHittree::mod_ana(int &status)
     }
     
 }
+void WriteHittree::mod_exit(int &status)
+{
+    using namespace std;
+    status = anlcross::ANL_OK;
+    if( m_file!=nullptr ){
+        m_file->cd();
+        m_tree->Write(); std::cout << " Write TTree " << m_tree->GetName() << std::endl;
+        m_file->Close(); std::cout << " Close TFile " << m_file->GetName() << std::endl;
+    }
+}
 int WriteHittree::set_write_branch()
 {
-    using namespace bnk;
-
+    //using namespace bnk;
+    
     m_tree->Branch(             "eventID",             &m_eventID,
 				"eventID/I");
     m_tree->Branch(            "livetime",            &m_livetime,
@@ -123,6 +161,7 @@ int WriteHittree::set_write_branch()
     */
     return ANL_OK;
 }
+/*
 int WriteHittree::get_branch_value()
 {
     get_branch("livetime",&m_livetime);
@@ -138,6 +177,7 @@ int WriteHittree::get_branch_value()
     get_branch("event_status",&m_event_status);
     return ANL_OK;
 }
+*/
 int WriteHittree::setEventStatus(int *event_status)
 {
     using namespace evs;
@@ -172,4 +212,12 @@ int WriteHittree::setEventStatus(int *event_status)
     }
     
     return 0;
+}
+TFile * WriteHittree::OpenTFile(std::string name, std::string option)
+{
+    TFile * file = new TFile(name.c_str(), option.c_str());
+    if( !file || file->IsZombie() ) return nullptr;
+    std::cout << "WriteHittree::OpenTFile ";
+    std::cout << name << std::endl;
+    return file;
 }

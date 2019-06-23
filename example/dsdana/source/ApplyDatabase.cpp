@@ -39,7 +39,7 @@ void ApplyDatabase::mod_init(int &status)
 
     status = ANL_OK;
     
-    std::cout << std::endl;
+    //std::cout << std::endl;
 }
 void ApplyDatabase::mod_his(int &status)
 {
@@ -119,7 +119,6 @@ void ApplyDatabase::mod_endrun(int &status)
 void ApplyDatabase::mod_exit(int &status)
 {
     status = ANL_OK;
-    std::cout << std::endl;
 }
 
 int ApplyDatabase::bnkDefAll()

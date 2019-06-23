@@ -19,16 +19,13 @@ ReadDatabase::ReadDatabase() : mInFile(nullptr), mDatabase(nullptr), m_calfunc(n
 }
 void ReadDatabase::mod_init(int &status)
 {
-    //using namespace gxroot;
     using namespace std;
 
     status = anlcross::ANL_OK;
 
-    //mInFile = TFileOpen( m_infile_name, "read" );
     mInFile = new TFile( m_infile_name.c_str(), "read");
     if( !mInFile || mInFile->IsZombie() ) status = ANL_NG;
     else{    
-	//mInFile = (TFile*)gxroot::GetTFile(m_infile_name);
 	mDatabase = (TTree*)mInFile->Get( m_intree_name.c_str() );
 	
 	if( 0 > mDatabase->SetBranchAddress("asicid", &m_asicid) ) status = anlcross::ANL_NG;
@@ -101,11 +98,9 @@ void ReadDatabase::mod_endrun(int &status)
 }
 void ReadDatabase::mod_exit(int &status)
 {
-    //using namespace gxroot;
-    //TFileClose(m_infile_name);
+    mDatabase->Delete();
     mInFile->Delete();
     status = ANL_OK;
-    std::cout << std::endl;
 }
 
 int ReadDatabase::FindStrip(int asicid, int asicch, int* detid, int* stripid)

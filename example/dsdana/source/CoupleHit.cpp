@@ -15,7 +15,7 @@ void CoupleHit::mod_init(int &status)
 {
     using namespace evs;
     status = ANL_OK;
-    std::cout << "CoupleHit::mod_init" << std::endl;
+    //std::cout << "CoupleHit::mod_init" << std::endl;
     
     mDatabase = (ReadDatabase*)get_module("ReadDatabase");
     if( !mDatabase || mDatabase->mod_name()!="ReadDatabase") status = ANL_NG;
@@ -28,7 +28,7 @@ void CoupleHit::mod_init(int &status)
     EvsDef("nhit_lv3==3");
     EvsDef("nhit_lv3>=4");
     
-    std::cout << std::endl;
+    //std::cout << std::endl;
 }
 void CoupleHit::mod_his(int &status)
 {
