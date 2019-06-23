@@ -1,41 +1,127 @@
-# @file Makefile
-# @date 2019/01/11
-# @brief 1ファイル1app用のMakefile. sample.cpp(main関数含む)を./sampleにする. TARGETに列挙すればいい
-TARGET = mkanlmodule mkdatabase
+#---TARGET---
 
-SOURCE_DIR := source/
-BUILD_DIR := build/
-BIN_DIR := bin/
+APP = mkreadtree mkwritetree
+LIB = 
+#--------------------------------------------------
 
-CXX = clang
-CXXFLAGS =  -MMD -MP -std=c++17 -Wall -Wextra `root-config --cflags`
-CXXLIBS = -lCOMCLI `root-config --libs`
+TOP_DIR := $(shell pwd)
+SOURCE_DIR := $(TOP_DIR)/source
+BUILD_DIR := $(TOP_DIR)/build
+INSTALL_DIR := $(TOP_DIR)/bin
+BIN_DIR := $(TOP_DIR)/bin
+LIB_DIR := $(TOP_DIR)/lib
+INCLUDE_DIR := $(TOP_DIR)/include
 
-all : $(addprefix $(BUILD_DIR),$(TARGET))
+#--------------------------------------------------
 
-$(BUILD_DIR)%: $(SOURCE_DIR)%.cpp
-	mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) $(CXXLIBS) $< -o $@
+CXX = g++
+CXXFLAGS = -MMD -MP -std=c++17 -Wall -Wextra
+CXXLIBS = -lCOMCLI
+#--------------------------------------------------
 
-.C.o :
-	${CXX} ${CXXFLAGS} -c $< -I.
+app = $(addprefix $(BUILD_DIR)/,$(APP))
+lib = $(addprefix $(BUILD_DIR)/,$(LIB))
+target = $(app) $(lib)
+installed_app = $(subst $(BUILD_DIR),$(BIN_DIR),$(app))
+installed_lib = $(subst $(BUILD_DIR),$(LIB_DIR),$(lib))
+
+main :=
+headers := $(shell find $(SOURCE_DIR) -name "*.hpp") $(shell find $(SOURCE_DIR) -name "*.h")
+source_dirs := $(shell find $(SOURCE_DIR) -type d)
+sources = $(foreach dir, $(source_dirs), $(wildcard $(dir)/*.cpp))
+
+objects := $(subst $(SOURCE_DIR),$(BUILD_DIR),$(sources:%.cpp=%.o))
+objects_dirs := $(addprefix $(BUILD_DIR)/, $(source_dirs)) 
+dependency := $(objects:.o=.d)
+
+include_flag := $(addprefix -I,$(source_dirs))
+#--------------------------------------------------
+
+.PHONY : help
+help : ## Print this message.
+	@echo "Usage: make [options] [target] ..."
+	@echo "Targets:"
+	@grep -Eh '^[a-zA-Z_-]+ : .*?## .*$$' $(MAKEFILE_LIST) | sort | awk -F'[:##]' '{printf "  \033[0m%-25s\033[0m %s\n", $$1, $$4}'
+
+.PHONY : show-structure
+show-structure : ## Print the directory structure of this makefile.
+	@echo "Directories:"
+	@printf "./  %-25s%s\n" "" "This makefile is here."
+	@printf "|-- %-25s%s\n" "source/" "All of C++ files in here will be compiled into executables. Main fucntions are needed."
+	@printf "|   %-25s%s\n" "|-- app_example.hpp" ""
+	@printf "|   %-25s%s\n" "|-- app_example.cpp" ""
+	@printf "|   %-25s%s\n" "'-- subsrc/" "Files in the sub-directories of 'source' "
+	@printf "|   %-25s%s\n" "    |-- sub_sample.h" ""
+	@printf "|   %-25s%s\n" "    '-- sub_sample.cpp" ""
+	@printf "|-- %-25s%s\n" "build/" ""
+	@printf "|   %-25s%s\n" "|-- app_example" ""
+	@printf "|   %-25s%s\n" "'-- subsrc/" ""
+	@printf "|   %-25s%s\n" "    '-- sub_sample" ""
+	@printf "|-- %-25s%s\n" "include/" "The symbolic links of headers are created here."
+	@printf "|   %-25s%s\n" "|-- app_example.hpp@ -> path/to/here/source/src.hpp" ""
+	@printf "|   %-25s%s\n" "'-- sub_sample.h@ -> path/to/here/source/subsrc/sub_src.h" ""
+	@printf "|-- %-25s%s\n" "bin/" "Executables are installed here."
+	@printf "|   %-25s%s\n" "'-- app_example" ""
+	@printf "|   %-25s%s\n" "'-- sub_sample" ""
+	@printf "'-- %-25s%s\n" "lib/" "Libraries is installed here."
+	@printf "    %-25s%s\n" "'-- libSAMPLE.so" ""
+
+all : $(BUILD_DIR) $(target) ## Find and compile all of the C++ files in the 'source' directory.
 
 .PHONY : install
-install : $(shell ls $(BUILD_DIR))
-	mkdir -p $(BIN_DIR); install $< $(BIN_DIR)/
+install : $(target) ## Install the app or the library into the install directories, 'bin' or 'lib'.
+ifneq ($(APP),)
+	mkdir -p $(BIN_DIR); install $(app) $(BIN_DIR)/
+endif
+ifneq ($(LIB),)
+	mkdir -p $(LIB_DIR)
+	install $(lib) $(LIB_DIR)/
+ifeq ($(shell uname), Darwin)
+	$(foreach temp, $(installed_lib), $(shell echo install_name_tool -id $(temp) $(temp)))
+endif
+endif
+
+$(BUILD_DIR) :
+	mkdir -p $@
+#--------------------------------------------------
+
+$(BUILD_DIR)/%: $(SOURCE_DIR)/%.cpp
+	@echo $@
+	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
+	$(CXX) $(CXXLIBS) $(CXXFLAGS) $(include_flag) -o $@ $<
+
+#$(app) : $(main_obj) $(objects) $(dictionary_obj)
+#	$(CXX) $(CXXLIBS) $(CXXFLAGS) -o $@ $^
+
+${lib} : ${objects} ${dictionary_obj}
+	mkdir -p $(INCLUDE_DIR); cd $(INCLUDE_DIR); ln -sf $(addprefix ,$(headers)) .
+	${CXX} ${CXXLIBS} ${CXXFLAGS} $(include_flag) -shared -fPIC -o $@ $^
+
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
+	@echo $@
+	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
+	$(CXX) $(CXXFLAGS) $(include_flag) -fPIC -o $@ -c $<
 
 .PHONY : clean
-clean :
-	@rm -f $(addprefix $(BUILD_DIR),$(TARGET)) *.o *~ app*
+clean : ## Delete the targets and the objects in the 'build' directory.
+	rm -rf *~ $(BUILD_DIR)/* $(target)
 
-.PHONY : uninstall
-uninstall :
-	@rm $(addprefix $(BIN_DIR),$(TARGET))
+.PHONY : cleanup
+cleanup : ## Delete the directories made at the compilation, 'build', 'bin', 'lib' and 'include'.
+	rm -rf $(BUILD_DIR) $(BIN_DIR) $(LIB_DIR) $(INCLUDE_DIR)
 
-.PHONY : show
-show :
-	@echo $(addprefix $(BIN_DIR),$(TARGET))
+.PHONY : uninstall 
+uninstall : ## Uninstall the app or the lib from the install directories.
+	rm $(installed_app) $(installed_lib)
 
-.PHONY : cleanall
-cleanall :
-	rm -rf $(BIN_DIR) $(BUILD_DIR)
+.PHONY : show-files
+show-files : ## Print all of the sources, objects and headers.
+	@echo "Sources:"
+	@$(foreach temp, $(sources), echo "  "$(temp);)
+	@echo "Objects:"
+	@$(foreach temp, $(objects), echo "  "$(temp);)
+	@echo "Headers:"
+	@$(foreach temp, $(headers), echo "  "$(temp);)
+#--------------------------------------------------
+
+-include $(dependency)

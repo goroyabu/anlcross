@@ -1,5 +1,3 @@
 #!/bin/sh
-cd `dirname ${BASH_ARGV[0]}`
-topdir=`pwd | xargs echo -n`
+topdir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
 export PATH=$topdir/bin:$PATH
-cd `cd -`
