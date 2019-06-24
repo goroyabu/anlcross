@@ -11,7 +11,7 @@
 
 #include <string>
 
-#include <TRandom.h>
+#include <TRandom3.h>
 #include <TH2D.h>
 
 #include <bnk.hpp>
@@ -23,7 +23,7 @@ class ApplyDatabase : public anlcross::ANLModuleBase
 {
 private:
     ReadDatabase * mDatabase;
-    TRandom * mRandom;
+    TRandom3 * mRandom;
     TH2D * m_histall;
     TH2D * m_spectall;
     TH2D * m_multi_hist;

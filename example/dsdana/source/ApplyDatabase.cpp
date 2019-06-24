@@ -18,7 +18,7 @@ void ApplyDatabase::mod_init(int &status)
 {
     status = ANL_OK;
 
-    mRandom = new TRandom();
+    mRandom = new TRandom3();
     mRandom->SetSeed(time(NULL));
 
     mDatabase = (ReadDatabase*)get_module("ReadDatabase");
