@@ -15,10 +15,8 @@ INCLUDE_DIR := $(TOP_DIR)/include
 #--------------------------------------------------
 
 CXX = g++
-ROOTCFLAGS = -I`root-config --incdir`
-ROOTGLIBS  = -L$(ROOTSYS)/lib/root -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lROOTDataFrame -lpthread -lm -ldl
-CXXFLAGS = $(ROOTCFLAGS) -MMD -MP -std=c++17 -Wall -Wextra
-CXXLIBS = $(ROOTGLIBS) -lCOMCLI
+CXXFLAGS = -MMD -MP -Wall -Wextra -std=c++1z 
+CXXLIBS = -lreadline -lCOMCLI
 #--------------------------------------------------
 
 app = $(addprefix $(BUILD_DIR)/,$(APP))
@@ -96,7 +94,7 @@ ${lib} : ${objects} ${dictionary_obj}
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	@echo $@
 	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
-	$(CXX) $(CXXFLAGS) $(include_flag) -o $@ -c $<
+	$(CXX) $(CXXFLAGS) $(include_flag) -fPIC -o $@ -c $<
 
 .PHONY : clean
 clean : ## Delete the targets and the objects in the 'build' directory.
@@ -106,7 +104,7 @@ clean : ## Delete the targets and the objects in the 'build' directory.
 cleanup : ## Delete the directories made at the compilation, 'build', 'bin', 'lib' and 'include'.
 	rm -rf $(BUILD_DIR) $(BIN_DIR) $(LIB_DIR) $(INCLUDE_DIR)
 
-.PHONY : uninstall
+.PHONY : uninstall 
 uninstall : ## Uninstall the app or the lib from the install directories.
 	rm $(installed_app) $(installed_lib)
 
